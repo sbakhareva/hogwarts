@@ -1,4 +1,5 @@
 package ru.hogwarts.school.service;
+
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.exception.EmptyStorageException;
@@ -20,7 +21,7 @@ public class FacultyService {
 
     public void addFaculty(Faculty faculty) {
         if (faculty.getName().isBlank() || faculty.getColor().isBlank()) {
-            throw new InvalidValueException("Поля не могут быть пустыми!");
+            throw new InvalidValueException();
         }
         facultyRepository.save(faculty);
     }
@@ -31,7 +32,7 @@ public class FacultyService {
             throw new EmptyStorageException();
         }
         if (!facultyRepository.existsById(id)) {
-            throw new InvalidValueException("Факультета с идентификатором " + id + " нет в базе!");
+            throw new InvalidValueException();
         }
         return facultyRepository.findById(id);
     }
@@ -42,7 +43,7 @@ public class FacultyService {
             throw new EmptyStorageException();
         }
         if (!facultyRepository.existsById(faculty.getId())) {
-            throw new InvalidValueException("Факультета с идентификатором " + faculty.getId() + " нет в базе!");
+            throw new InvalidValueException();
         }
         facultyRepository.save(faculty);
     }
@@ -53,7 +54,7 @@ public class FacultyService {
             throw new EmptyStorageException();
         }
         if (!facultyRepository.existsById(id)) {
-            throw new InvalidValueException("Факультета с идентификатором " + id + " нет в базе!");
+            throw new InvalidValueException();
         }
         facultyRepository.deleteById(id);
     }
@@ -72,10 +73,14 @@ public class FacultyService {
             throw new EmptyStorageException();
         }
         if (color.isBlank()) {
-            throw new InvalidValueException("Поле 'Цвет' не может быть пустым!");
+            throw new InvalidValueException();
         }
         return faculties.stream()
                 .filter(q -> q.getColor().contains(color))
                 .toList();
+    }
+
+    public Faculty findByNameOrColor(String name, String color) {
+        return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(name, color);
     }
 }

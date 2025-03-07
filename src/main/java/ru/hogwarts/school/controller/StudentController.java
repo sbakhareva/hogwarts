@@ -34,7 +34,7 @@ public class StudentController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<Optional <Student>> getStudentByID(@RequestParam("id") Long id) {
+    public ResponseEntity<Optional<Student>> getStudentByID(@RequestParam("id") Long id) {
         return ResponseEntity.ok(studentService.getStudentByID(id));
     }
 
@@ -53,5 +53,11 @@ public class StudentController {
     @GetMapping("/sort")
     public ResponseEntity<List<Student>> sortStudentsByAge(@RequestParam("age") int age) {
         return ResponseEntity.ok(studentService.sortByAge(age));
+    }
+
+    @GetMapping("/findBetweenAge")
+    public List<Student> findDyAgeBetween(@RequestParam("from") int minAge,
+                                          @RequestParam("to") int maxAge) {
+        return studentService.findByAgeBetween(minAge, maxAge);
     }
 }

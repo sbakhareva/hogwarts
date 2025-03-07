@@ -53,4 +53,9 @@ public class FacultyController {
         return ResponseEntity.ok(facultyService.sortByColor(color));
     }
 
+    @GetMapping("/findBy")
+    public Faculty findByNameOrColor(@RequestParam(value = "name", required = false) String name,
+                                     @RequestParam(value = "color", required = false) String color) {
+        return facultyService.findByNameOrColor(name, color);
+    }
 }
