@@ -1,6 +1,7 @@
 package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.model.exception.EmptyStorageException;
 import ru.hogwarts.school.model.exception.InvalidValueException;
@@ -8,7 +9,6 @@ import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -19,11 +19,11 @@ public class StudentService {
         this.studentRepository = studentRepository;
     }
 
-    public void addStudent(Student student) {
-        if (student.getName().isBlank() || student.getAge() == 0) {
+    public void addStudent(String name, int age, Faculty faculty) {
+        if (name.isBlank() || age == 0) {
             throw new InvalidValueException();
         }
-        studentRepository.save(student);
+        studentRepository.save(new Student(name, age, faculty));
     }
 
     public Optional<Student> getStudentByID(Long id) {
@@ -85,10 +85,14 @@ public class StudentService {
         if (students.isEmpty()) {
             throw new EmptyStorageException();
         }
-        List<Student> sortedStudents = studentRepository.findByAgeBetween(ageMin, ageMax);
+        List<Student> sortedStudents = studentRepository.findAllByAgeBetween(ageMin, ageMax);
         if (sortedStudents.isEmpty()) {
             throw new InvalidValueException();
         }
         return sortedStudents;
+    }
+
+    public Faculty getFaculty(Long id) {
+        return studentRepository.findById(id).get().getFaculty();
     }
 }
