@@ -3,74 +3,78 @@ import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.exception.EmptyStorageException;
 import ru.hogwarts.school.model.exception.InvalidValueException;
+import ru.hogwarts.school.repository.FacultyRepository;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FacultyService {
 
-    private Long counter = 0L;
-    private final HashMap<Long, Faculty> faculties;
+    private final FacultyRepository facultyRepository;
 
-    public FacultyService(HashMap<Long, Faculty> faculties) {
-        this.faculties = faculties;
+    public FacultyService(FacultyRepository facultyRepository) {
+        this.facultyRepository = facultyRepository;
     }
 
     public void addFaculty(Faculty faculty) {
         if (faculty.getName().isBlank() || faculty.getColor().isBlank()) {
             throw new InvalidValueException("Поля не могут быть пустыми!");
         }
-        faculty.setId(++counter);
-        faculties.put(faculty.getId(), faculty);
+        facultyRepository.save(faculty);
     }
 
-    public Faculty getFacultyByID(Long id) {
+    public Optional<Faculty> getFacultyByID(Long id) {
+        List<Faculty> faculties = facultyRepository.findAll();
         if (faculties.isEmpty()) {
             throw new EmptyStorageException();
         }
-        Faculty faculty = faculties.get(id);
-        if (faculty == null) {
+        if (!facultyRepository.existsById(id)) {
             throw new InvalidValueException("Факультета с идентификатором " + id + " нет в базе!");
         }
-        return faculty;
+        return facultyRepository.findById(id);
     }
 
     public void updateFaculty(Faculty faculty) {
+        List<Faculty> faculties = facultyRepository.findAll();
         if (faculties.isEmpty()) {
             throw new EmptyStorageException();
         }
-        if (!faculties.containsKey(faculty.getId())) {
+        if (!facultyRepository.existsById(faculty.getId())) {
             throw new InvalidValueException("Факультета с идентификатором " + faculty.getId() + " нет в базе!");
         }
-        faculties.put(faculty.getId(), faculty);
+        facultyRepository.save(faculty);
     }
 
     public void removeFaculty(Long id) {
+        List<Faculty> faculties = facultyRepository.findAll();
         if (faculties.isEmpty()) {
             throw new EmptyStorageException();
         }
-        if (faculties.get(id) == null) {
+        if (!facultyRepository.existsById(id)) {
             throw new InvalidValueException("Факультета с идентификатором " + id + " нет в базе!");
         }
-        faculties.remove(id);
+        facultyRepository.deleteById(id);
     }
 
-    public HashMap<Long, Faculty> getAllFaculties() {
+    public List<Faculty> getAllFaculties() {
+        List<Faculty> faculties = facultyRepository.findAll();
         if (faculties.isEmpty()) {
             throw new EmptyStorageException();
         }
-        return faculties;
+        return Collections.unmodifiableList(faculties);
     }
 
     public List<Faculty> sortByColor(String color) {
+        List<Faculty> faculties = facultyRepository.findAll();
         if (faculties.isEmpty()) {
             throw new EmptyStorageException();
         }
         if (color.isBlank()) {
             throw new InvalidValueException("Поле 'Цвет' не может быть пустым!");
         }
-        return faculties.values().stream()
+        return faculties.stream()
                 .filter(q -> q.getColor().contains(color))
                 .toList();
     }

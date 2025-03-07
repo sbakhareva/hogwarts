@@ -1,11 +1,18 @@
 package ru.hogwarts.school.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Objects;
 
+@Entity(name = "students")
 public class Student {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private int age;
@@ -14,6 +21,8 @@ public class Student {
         this.name = name;
         this.age = age;
     }
+
+    public Student() {}
 
     public Long getId() {
         return id;

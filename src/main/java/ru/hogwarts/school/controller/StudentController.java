@@ -7,6 +7,7 @@ import ru.hogwarts.school.service.StudentService;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/school/student")
@@ -20,22 +21,21 @@ public class StudentController {
 
 
     @GetMapping("/getAll")
-    public ResponseEntity<HashMap<Long, Student>> getStudents() {
+    public ResponseEntity<List<Student>> getStudents() {
         return ResponseEntity.ok(studentService.getAllStudents());
     }
+
     @PostMapping("/add")
-    public ResponseEntity<String> addStudent(@RequestBody Student student) {
-        studentService.addStudent(student);
-        return ResponseEntity.ok("Студент с идентификатором" + student.getId() + " добавлен в список!");
+    public ResponseEntity<Student> addStudent(@RequestParam("/name") String name,
+                                              @RequestParam("/age") int age) {
+        Student s = new Student(name, age);
+        studentService.addStudent(s);
+        return ResponseEntity.ok(s);
     }
 
     @GetMapping("/get")
-    public ResponseEntity<String> getStudentByID(@RequestParam("id") Long id) {
-        Student s = studentService.getStudentByID(id);
-        if (s == null) {
-            return ResponseEntity.badRequest().body("Студента с идентификатором " + id + " нет в базе!");
-        }
-        return ResponseEntity.ok(s.toString());
+    public ResponseEntity<Optional <Student>> getStudentByID(@RequestParam("id") Long id) {
+        return ResponseEntity.ok(studentService.getStudentByID(id));
     }
 
     @DeleteMapping("/remove")

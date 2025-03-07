@@ -1,74 +1,80 @@
 package ru.hogwarts.school.service;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.model.exception.EmptyStorageException;
 import ru.hogwarts.school.model.exception.InvalidValueException;
+import ru.hogwarts.school.repository.StudentRepository;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class StudentService {
-    private Long counter = 0L;
-    private final HashMap<Long, Student> students;
+    private final StudentRepository studentRepository;
 
-    public StudentService(HashMap<Long, Student> students) {
-        this.students = students;
+    public StudentService(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
     }
 
     public void addStudent(Student student) {
         if (student.getName().isBlank() || student.getAge() == 0) {
             throw new InvalidValueException("Поля не могут быть пустыми!");
         }
-        student.setId(++counter);
-        students.put(student.getId(), student);
+        studentRepository.save(student);
     }
 
-    public Student getStudentByID(Long id) {
+    public Optional<Student> getStudentByID(Long id) {
+        List<Student> students = studentRepository.findAll();
         if (students.isEmpty()) {
             throw new EmptyStorageException();
         }
-        return students.get(id);
+        if (!studentRepository.existsById(id)) {
+            throw new InvalidValueException("Студента с идентификатором " + id + " нет в базе данных!");
+        }
+        return studentRepository.findById(id);
     }
 
     public void updateStudent(Student student) {
+        List<Student> students = studentRepository.findAll();
         if (students.isEmpty()) {
             throw new EmptyStorageException();
         }
-        if (!students.containsKey(student.getId())) {
-            throw new InvalidValueException("Факультета с идентификатором " + student.getId() + " нет в базе!");
+        if (!studentRepository.existsById(student.getId())) {
+            throw new InvalidValueException("Студента с идентификатором " + student.getId() + " нет в базе!");
         }
-        students.put(student.getId(), student);
+        studentRepository.save(student);
     }
 
     public void removeStudent(Long id) {
+        List<Student> students = studentRepository.findAll();
         if (students.isEmpty()) {
             throw new EmptyStorageException();
         }
-        if (students.get(id) == null) {
+        if (!studentRepository.existsById(id)) {
             throw new InvalidValueException("Студента с идентификатором " + id + " нет в базе данных!");
         }
-        students.remove(id);
+        studentRepository.deleteById(id);
     }
 
-    public HashMap<Long, Student> getAllStudents() {
+    public List<Student> getAllStudents() {
+        List<Student> students = studentRepository.findAll();
         if (students.isEmpty()) {
             throw new EmptyStorageException();
         }
-        return students;
+        return Collections.unmodifiableList(students);
     }
 
     public List<Student> sortByAge(int age) {
+        List<Student> students = studentRepository.findAll();
         if (students.isEmpty()) {
             throw new EmptyStorageException();
         }
         if (age == 0) {
             throw new InvalidValueException("Возраст не может быть равен нулю!");
         }
-        return students.values().stream()
+        return students.stream()
                 .filter(q -> q.getAge() == age)
                 .toList();
     }

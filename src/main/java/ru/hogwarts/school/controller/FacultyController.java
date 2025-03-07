@@ -3,11 +3,10 @@ package ru.hogwarts.school.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
-import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/school/faculty")
@@ -20,18 +19,20 @@ public class FacultyController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<HashMap<Long, Faculty>> getStudents() {
+    public ResponseEntity<List<Faculty>> getStudents() {
         return ResponseEntity.ok(facultyService.getAllFaculties());
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Faculty> addFaculty(@RequestBody Faculty faculty) {
-        facultyService.addFaculty(faculty);
-        return ResponseEntity.ok(faculty);
+    public ResponseEntity<Faculty> addFaculty(@RequestParam("/name") String name,
+                                              @RequestParam("/color") String color) {
+        Faculty f = new Faculty(name, color);
+        facultyService.addFaculty(f);
+        return ResponseEntity.ok(f);
     }
 
     @GetMapping("/get")
-    public ResponseEntity<Faculty> getFacultyByID(@RequestParam("id") Long id) {
+    public ResponseEntity<Optional<Faculty>> getFacultyByID(@RequestParam("id") Long id) {
         return ResponseEntity.ok(facultyService.getFacultyByID(id));
     }
 
