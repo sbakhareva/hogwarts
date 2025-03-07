@@ -1,5 +1,7 @@
 package ru.hogwarts.school.model;
 
+import org.springframework.context.annotation.Configuration;
+
 import java.util.Objects;
 
 public class Student {

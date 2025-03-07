@@ -5,8 +5,11 @@ import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
+import java.util.HashMap;
+import java.util.List;
+
 @RestController
-@RequestMapping("/student")
+@RequestMapping("/school/student")
 public class StudentController {
 
     private final StudentService studentService;
@@ -15,39 +18,40 @@ public class StudentController {
         this.studentService = studentService;
     }
 
+
+    @GetMapping("/getAll")
+    public ResponseEntity<HashMap<Long, Student>> getStudents() {
+        return ResponseEntity.ok(studentService.getAllStudents());
+    }
     @PostMapping("/add")
     public ResponseEntity<String> addStudent(@RequestBody Student student) {
-        if (student.getName().isBlank() || student.getAge() == 0) {
-            return ResponseEntity.badRequest().body("Переданы некорректные данные!");
-        }
         studentService.addStudent(student);
         return ResponseEntity.ok("Студент с идентификатором" + student.getId() + " добавлен в список!");
     }
 
     @GetMapping("/get")
-    public ResponseEntity<Student> getStudentByID(@RequestParam("id") Long id) {
+    public ResponseEntity<String> getStudentByID(@RequestParam("id") Long id) {
         Student s = studentService.getStudentByID(id);
         if (s == null) {
-            ResponseEntity.badRequest().body("Студента с идентификатором " + id + " нет в базе!");
+            return ResponseEntity.badRequest().body("Студента с идентификатором " + id + " нет в базе!");
         }
-        return ResponseEntity.ok(s);
+        return ResponseEntity.ok(s.toString());
     }
 
-    @GetMapping("/remove")
-    public ResponseEntity<String> deleteStudent(@PathVariable Long id) {
-        Student s = studentService.getStudentByID(id);
-        if (s == null) {
-            ResponseEntity.badRequest().body("Студента с идентификатором " + id + " нет в базе!");
-        }
+    @DeleteMapping("/remove")
+    public ResponseEntity<String> deleteStudent(@RequestParam("id") Long id) {
+        studentService.removeStudent(id);
         return ResponseEntity.ok().body("Студент с идентификатором " + id + " удален из списка!");
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<String> editStudent(Student student) {
-        if (!studentService.getAllStudents().containsKey(student.getId())) {
-            throw new RuntimeException("Студента с таким идентификатором нет в базе!");
-        }
+    public ResponseEntity<Student> editStudent(@RequestBody Student student) {
         studentService.updateStudent(student);
-        return ResponseEntity.ok("Данные студента обновлены!");
+        return ResponseEntity.ok(student);
+    }
+
+    @GetMapping("/sort")
+    public ResponseEntity<List<Student>> sortStudentsByAge(@RequestParam("age") int age) {
+        return ResponseEntity.ok(studentService.sortByAge(age));
     }
 }
