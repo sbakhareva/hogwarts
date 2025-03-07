@@ -17,10 +17,6 @@ public class Faculty {
     private String name;
     private String color;
 
-    @JsonIgnore
-    @OneToMany
-    private Collection<Student> students;
-
     public Faculty(String name, String color) {
 
         this.name = name;
@@ -52,11 +48,6 @@ public class Faculty {
 
     public void setColor(String color) {
         this.color = color;
-    }
-
-
-    public Collection<Student> getStudents() {
-        return students;
     }
 
     @Override

@@ -19,11 +19,11 @@ public class StudentService {
         this.studentRepository = studentRepository;
     }
 
-    public void addStudent(String name, int age, Faculty faculty) {
-        if (name.isBlank() || age == 0) {
+    public void addStudent(Student student) {
+        if (student.getName().isBlank() || student.getAge() == 0) {
             throw new InvalidValueException();
         }
-        studentRepository.save(new Student(name, age, faculty));
+        studentRepository.save(student);
     }
 
     public Optional<Student> getStudentByID(Long id) {
@@ -90,9 +90,5 @@ public class StudentService {
             throw new InvalidValueException();
         }
         return sortedStudents;
-    }
-
-    public Faculty getFaculty(Long id) {
-        return studentRepository.findById(id).get().getFaculty();
     }
 }

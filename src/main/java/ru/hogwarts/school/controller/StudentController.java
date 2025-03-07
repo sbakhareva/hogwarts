@@ -28,10 +28,9 @@ public class StudentController {
 
     @PostMapping("/add")
     public ResponseEntity<Student> addStudent(@RequestParam("/name") String name,
-                                              @RequestParam("/age") int age,
-                                              @RequestParam("/faculty") Faculty faculty) {
-        Student s = new Student(name, age, faculty);
-        studentService.addStudent(name, age, faculty);
+                                              @RequestParam("/age") int age) {
+        Student s = new Student(name, age);
+        studentService.addStudent(s);
         return ResponseEntity.ok(s);
     }
 
@@ -61,10 +60,5 @@ public class StudentController {
     public List<Student> findDyAgeBetween(@RequestParam("from") int minAge,
                                           @RequestParam("to") int maxAge) {
         return studentService.findByAgeBetween(minAge, maxAge);
-    }
-
-    @GetMapping("/getFaculty/{id}")
-    public Faculty getStudentsFaculty(@PathVariable Long id) {
-        return studentService.getFaculty(id);
     }
 }
