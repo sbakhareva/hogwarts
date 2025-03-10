@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Entity(name = "faculties")
@@ -16,6 +18,10 @@ public class Faculty {
     private Long id;
     private String name;
     private String color;
+
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "faculty")
+    private List<Student> students;
 
     public Faculty(String name, String color) {
 
@@ -48,6 +54,14 @@ public class Faculty {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
 
     @Override
