@@ -2,6 +2,7 @@ package ru.hogwarts.school.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.dto.StudentDTO;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
@@ -20,12 +21,6 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-
-    @GetMapping("/getAll")
-    public List<Student> getStudents() {
-        return studentService.getAllStudents();
-    }
-
     @PostMapping("/add")
     public Student addStudent(@RequestParam("/name") String name,
                                               @RequestParam("/age") int age,
@@ -36,8 +31,13 @@ public class StudentController {
     }
 
     @GetMapping("/get")
-    public Optional<Student> getStudentByID(@RequestParam("id") Long id) {
+    public Optional<StudentDTO> getStudentByID(@RequestParam("id") Long id) {
         return studentService.getStudentByID(id);
+    }
+
+    @GetMapping("/getAll")
+    public List<StudentDTO> getStudents() {
+        return studentService.getAllStudents();
     }
 
     @DeleteMapping("/remove")

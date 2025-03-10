@@ -83,11 +83,22 @@ public class FacultyService {
     }
 
     public Faculty findByNameOrColor(String name, String color) {
+        List<Faculty> faculties = facultyRepository.findAll();
+        if (faculties.isEmpty()) {
+            throw new EmptyStorageException();
+        }
         return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(name, color);
     }
 
     public List<Student> getAllStudentsOfFaculty(String name) {
+        List<Faculty> faculties = facultyRepository.findAll();
+        if (faculties.isEmpty()) {
+            throw new EmptyStorageException();
+        }
         Optional<Faculty> f = facultyRepository.findByNameIgnoreCaseContains(name);
+        if (f.isEmpty()) {
+            throw new InvalidValueException();
+        }
         return f.get().getStudents();
     }
 }

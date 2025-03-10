@@ -1,22 +1,26 @@
 package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.dto.StudentDTO;
+import ru.hogwarts.school.dto.StudentDTOMapper;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.model.exception.EmptyStorageException;
 import ru.hogwarts.school.model.exception.InvalidValueException;
 import ru.hogwarts.school.repository.StudentRepository;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
     private final StudentRepository studentRepository;
+    private final StudentDTOMapper studentDTOMapper;
 
-    public StudentService(StudentRepository studentRepository) {
+    public StudentService(StudentRepository studentRepository, StudentDTOMapper studentDTOMapper) {
         this.studentRepository = studentRepository;
+        this.studentDTOMapper = studentDTOMapper;
     }
 
     public void addStudent(Student student) {
@@ -26,7 +30,7 @@ public class StudentService {
         studentRepository.save(student);
     }
 
-    public Optional<Student> getStudentByID(Long id) {
+    public Optional<StudentDTO> getStudentByID(Long id) {
         List<Student> students = studentRepository.findAll();
         if (students.isEmpty()) {
             throw new EmptyStorageException();
@@ -34,7 +38,18 @@ public class StudentService {
         if (!studentRepository.existsById(id)) {
             throw new InvalidValueException();
         }
-        return studentRepository.findById(id);
+        return studentRepository.findById(id)
+                .map(studentDTOMapper);
+    }
+
+    public List<StudentDTO> getAllStudents() {
+        List<Student> students = studentRepository.findAll();
+        if (students.isEmpty()) {
+            throw new EmptyStorageException();
+        }
+        return students.stream()
+                .map(studentDTOMapper)
+                .collect(Collectors.toList());
     }
 
     public void updateStudent(Student student) {
@@ -59,14 +74,6 @@ public class StudentService {
         studentRepository.deleteById(id);
     }
 
-    public List<Student> getAllStudents() {
-        List<Student> students = studentRepository.findAll();
-        if (students.isEmpty()) {
-            throw new EmptyStorageException();
-        }
-        return Collections.unmodifiableList(students);
-    }
-
     public List<Student> sortByAge(int age) {
         List<Student> students = studentRepository.findAll();
         if (students.isEmpty()) {
@@ -85,6 +92,9 @@ public class StudentService {
         if (students.isEmpty()) {
             throw new EmptyStorageException();
         }
+        if (ageMin == 0 || ageMax == 0) {
+            throw new InvalidValueException();
+        }
         List<Student> sortedStudents = studentRepository.findAllByAgeBetween(ageMin, ageMax);
         if (sortedStudents.isEmpty()) {
             throw new InvalidValueException();
@@ -93,7 +103,14 @@ public class StudentService {
     }
 
     public Faculty getStudentsFaculty(String name) {
-        Optional<Student> s = studentRepository.findStudentByNameContains(name);
+        List<Student> students = studentRepository.findAll();
+        if (students.isEmpty()) {
+            throw new EmptyStorageException();
+        }
+        Optional<Student> s = studentRepository.findStudentByNameIgnoreCaseContains(name);
+        if (name.isBlank() || name.isEmpty() || s.isEmpty()) {
+            throw new InvalidValueException();
+        }
         return s.get().getFaculty();
     }
 }
