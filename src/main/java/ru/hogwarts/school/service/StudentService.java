@@ -23,6 +23,10 @@ public class StudentService {
         this.studentDTOMapper = studentDTOMapper;
     }
 
+    public boolean storageIsNotEmpty() {
+        return true;
+    }
+
     public void addStudent(Student student) {
         if (student.getName().isBlank() || student.getAge() == 0) {
             throw new InvalidValueException();

@@ -21,6 +21,10 @@ public class FacultyService {
         this.facultyRepository = facultyRepository;
     }
 
+    public boolean storageIsNotEmpty() {
+        return true;
+    }
+
     public void addFaculty(Faculty faculty) {
         if (faculty.getName().isBlank() || faculty.getColor().isBlank()) {
             throw new InvalidValueException();
