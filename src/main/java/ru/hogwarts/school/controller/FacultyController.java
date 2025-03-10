@@ -61,4 +61,9 @@ public class FacultyController {
                                      @RequestParam(value = "color", required = false) String color) {
         return facultyService.findByNameOrColor(name, color);
     }
+
+    @GetMapping("/getAllStudents")
+    public List<Student> getAllStudentsOfFaculty(@RequestParam("name") String name) {
+        return facultyService.getAllStudentsOfFaculty(name);
+    }
 }

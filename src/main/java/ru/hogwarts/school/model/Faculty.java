@@ -24,7 +24,6 @@ public class Faculty {
     private List<Student> students;
 
     public Faculty(String name, String color) {
-
         this.name = name;
         this.color = color;
     }
@@ -83,6 +82,7 @@ public class Faculty {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", color='" + color + '\'' +
+                ", students=" + students +
                 '}';
     }
 }

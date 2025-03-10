@@ -91,4 +91,9 @@ public class StudentService {
         }
         return sortedStudents;
     }
+
+    public Faculty getStudentsFaculty(String name) {
+        Optional<Student> s = studentRepository.findStudentByNameContains(name);
+        return s.get().getFaculty();
+    }
 }

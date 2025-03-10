@@ -22,21 +22,22 @@ public class StudentController {
 
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<Student>> getStudents() {
-        return ResponseEntity.ok(studentService.getAllStudents());
+    public List<Student> getStudents() {
+        return studentService.getAllStudents();
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Student> addStudent(@RequestParam("/name") String name,
-                                              @RequestParam("/age") int age) {
-        Student s = new Student(name, age);
+    public Student addStudent(@RequestParam("/name") String name,
+                                              @RequestParam("/age") int age,
+                                              @RequestBody Faculty faculty) {
+        Student s = new Student(name, age, faculty);
         studentService.addStudent(s);
-        return ResponseEntity.ok(s);
+        return s;
     }
 
     @GetMapping("/get")
-    public ResponseEntity<Optional<Student>> getStudentByID(@RequestParam("id") Long id) {
-        return ResponseEntity.ok(studentService.getStudentByID(id));
+    public Optional<Student> getStudentByID(@RequestParam("id") Long id) {
+        return studentService.getStudentByID(id);
     }
 
     @DeleteMapping("/remove")
@@ -46,19 +47,24 @@ public class StudentController {
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<Student> editStudent(@RequestBody Student student) {
+    public Student editStudent(@RequestBody Student student) {
         studentService.updateStudent(student);
-        return ResponseEntity.ok(student);
+        return student;
     }
 
     @GetMapping("/sort")
-    public ResponseEntity<List<Student>> sortStudentsByAge(@RequestParam("age") int age) {
-        return ResponseEntity.ok(studentService.sortByAge(age));
+    public List<Student> sortStudentsByAge(@RequestParam("age") int age) {
+        return studentService.sortByAge(age);
     }
 
     @GetMapping("/findBetweenAge")
     public List<Student> findDyAgeBetween(@RequestParam("from") int minAge,
                                           @RequestParam("to") int maxAge) {
         return studentService.findByAgeBetween(minAge, maxAge);
+    }
+
+    @GetMapping("/getFaculty")
+    public Faculty getStudentsFaculty(@RequestParam("name") String name) {
+        return studentService.getStudentsFaculty(name);
     }
 }
