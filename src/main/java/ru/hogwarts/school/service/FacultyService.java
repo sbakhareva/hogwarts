@@ -61,13 +61,16 @@ public class FacultyService {
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
-        List<Faculty> faculties = facultyRepository.findAll().stream()
-                .filter(q -> q.getColor().contains(color))
-                .toList();
-        if (faculties.isEmpty()) {
+        if (color.isBlank() || color.isEmpty()) {
             throw new InvalidValueException();
         }
-        return faculties;
+        List<Faculty> f = facultyRepository.findAll().stream()
+                .filter(q -> q.getColor().contains(color))
+                .toList();
+        if (f.isEmpty()) {
+            throw new InvalidValueException();
+        }
+        return f;
     }
 
     public Faculty findByNameOrColor(String name, String color) {
@@ -82,8 +85,8 @@ public class FacultyService {
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
-        Optional<Faculty> f = facultyRepository.findByNameIgnoreCaseContains(name);
-        return Optional.of(f.get().getStudents()).orElseThrow(InvalidValueException::new);
+        Optional<Faculty> f = Optional.ofNullable(facultyRepository.findByNameIgnoreCaseContains(name).orElseThrow(InvalidValueException::new));
+        return f.get().getStudents();
     }
 
 }

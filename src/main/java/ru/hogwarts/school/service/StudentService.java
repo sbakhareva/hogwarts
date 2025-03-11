@@ -59,9 +59,6 @@ public class StudentService {
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
-        if (!studentRepository.existsById(student.getId())) {
-            throw new InvalidValueException();
-        }
         Optional.ofNullable(studentRepository.save(student)).orElseThrow(InvalidValueException::new);
     }
 
@@ -77,33 +74,29 @@ public class StudentService {
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
-        return Optional.ofNullable(studentRepository.findAll().stream()
+        if (age == 0) {
+            throw new InvalidValueException();
+        }
+        return studentRepository.findAll().stream()
                 .filter(q -> q.getAge() == age)
-                .toList()).orElseThrow(InvalidValueException::new);
+                .toList();
     }
 
     public List<Student> findByAgeBetween(int ageMin, int ageMax) {
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
-        if (ageMin == 0 || ageMax == 0) {
+        if (ageMin >= ageMax || ageMax == 0) {
             throw new InvalidValueException();
         }
-        List<Student> sortedStudents = studentRepository.findAllByAgeBetween(ageMin, ageMax);
-        if (sortedStudents.isEmpty()) {
-            throw new InvalidValueException();
-        }
-        return sortedStudents;
+        return studentRepository.findAllByAgeBetween(ageMin, ageMax);
     }
 
     public Faculty getStudentsFaculty(String name) {
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
-        Optional<Student> s = studentRepository.findStudentByNameIgnoreCaseContains(name);
-        if (name.isBlank() || name.isEmpty() || s.isEmpty()) {
-            throw new InvalidValueException();
-        }
-        return s.get().getFaculty();
+        return Optional.of(studentRepository.findStudentByNameIgnoreCaseContains(name).get().getFaculty())
+                .orElseThrow(InvalidValueException::new);
     }
 }
