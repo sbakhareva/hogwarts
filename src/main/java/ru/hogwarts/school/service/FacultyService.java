@@ -61,13 +61,10 @@ public class FacultyService {
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
-        if (color.isBlank() || color.isEmpty()) {
-            throw new InvalidValueException();
-        }
         List<Faculty> f = facultyRepository.findAll().stream()
                 .filter(q -> q.getColor().contains(color))
                 .toList();
-        if (f.isEmpty()) {
+        if (color.isBlank() || color.isEmpty() || f.isEmpty()) {
             throw new InvalidValueException();
         }
         return f;
