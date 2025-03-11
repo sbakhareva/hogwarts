@@ -86,10 +86,11 @@ public class StudentService {
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
-        if (ageMin >= ageMax || ageMax == 0) {
+        List<Student> sorted = studentRepository.findAllByAgeBetween(ageMin, ageMax);
+        if (ageMin >= ageMax || ageMax == 0 || sorted.isEmpty()) {
             throw new InvalidValueException();
         }
-        return studentRepository.findAllByAgeBetween(ageMin, ageMax);
+        return sorted;
     }
 
     public Faculty getStudentsFaculty(String name) {
