@@ -7,7 +7,6 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,8 +22,8 @@ public class StudentController {
 
     @PostMapping("/add")
     public Student addStudent(@RequestParam("/name") String name,
-                                              @RequestParam("/age") int age,
-                                              @RequestBody Faculty faculty) {
+                              @RequestParam("/age") int age,
+                              @RequestBody Faculty faculty) {
         Student s = new Student(name, age, faculty);
         studentService.addStudent(s);
         return s;

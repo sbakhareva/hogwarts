@@ -22,38 +22,38 @@ public class FacultyController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<Faculty>> getFaculties() {
-        return ResponseEntity.ok(facultyService.getAllFaculties());
+    public List<Faculty> getFaculties() {
+        return facultyService.getAllFaculties();
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Faculty> addFaculty(@RequestParam("/name") String name,
-                                              @RequestParam("/color") String color) {
+    public Faculty addFaculty(@RequestParam("/name") String name,
+                              @RequestParam("/color") String color) {
         Faculty f = new Faculty(name, color);
         facultyService.addFaculty(f);
-        return ResponseEntity.ok(f);
+        return f;
     }
 
     @GetMapping("/get")
-    public ResponseEntity<Optional<Faculty>> getFacultyByID(@RequestParam("id") Long id) {
-        return ResponseEntity.ok(facultyService.getFacultyByID(id));
+    public Faculty getFacultyByID(@RequestParam("id") Long id) {
+        return facultyService.getFacultyByID(id);
     }
 
     @DeleteMapping("/remove")
     public ResponseEntity<String> deleteFaculty(@RequestParam("id") Long id) {
         facultyService.removeFaculty(id);
-        return ResponseEntity.ok("Студент с идентификатором " + id + " удален из списка!");
+        return ResponseEntity.ok("Факультет с идентификатором " + id + " удален из списка!");
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<Faculty> editFaculty(@RequestBody Faculty faculty) {
-        facultyService.updateFaculty(faculty);
-        return ResponseEntity.ok(faculty);
+    public Faculty editFaculty(@RequestBody Faculty faculty) {
+        facultyService.editFaculty(faculty);
+        return faculty;
     }
 
     @GetMapping("/sort")
-    public ResponseEntity<List<Faculty>> sortByColor(@RequestParam("/color") String color) {
-        return ResponseEntity.ok(facultyService.sortByColor(color));
+    public List<Faculty> sortByColor(@RequestParam("/color") String color) {
+        return facultyService.sortByColor(color);
     }
 
     @GetMapping("/findBy")

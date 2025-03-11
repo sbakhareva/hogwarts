@@ -2,6 +2,8 @@ package ru.hogwarts.school.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Objects;
 
@@ -16,6 +18,7 @@ public class Student {
 
     @ManyToOne
     @JoinColumn(name = "faculty_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Faculty faculty;
 
     public Student(String name, int age, Faculty faculty) {

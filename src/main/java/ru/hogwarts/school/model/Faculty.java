@@ -20,7 +20,7 @@ public class Faculty {
     private String color;
 
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "faculty")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "faculty")
     private List<Student> students;
 
     public Faculty(String name, String color) {
