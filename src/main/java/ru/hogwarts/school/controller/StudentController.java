@@ -90,7 +90,7 @@ public class StudentController {
             return ResponseEntity.badRequest().body("Размер файла слишком большой!");
         }
         avatarService.uploadAvatar(id, avatar);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("Для студента " + studentService.findStudent(id).getName() + " добавлен аватар!");
     }
 
     @GetMapping(value = "/{id}/avatar/preview")

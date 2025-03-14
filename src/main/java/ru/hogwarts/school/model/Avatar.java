@@ -21,6 +21,9 @@ public class Avatar {
     @JoinColumn(name = "student_id")
     private Student student;
 
+    public Avatar() {
+    }
+
     public Long getId() {
         return id;
     }
