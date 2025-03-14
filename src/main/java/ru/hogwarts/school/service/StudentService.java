@@ -1,5 +1,6 @@
 package ru.hogwarts.school.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.dto.StudentDTO;
 import ru.hogwarts.school.dto.StudentDTOMapper;
@@ -7,16 +8,16 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.model.exception.EmptyStorageException;
 import ru.hogwarts.school.model.exception.InvalidValueException;
-import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class StudentService {
+
     private final StudentRepository studentRepository;
     private final StudentDTOMapper studentDTOMapper;
     private final FacultyService facultyService;
@@ -46,6 +47,9 @@ public class StudentService {
                 .map(studentDTOMapper)).orElseThrow(InvalidValueException::new);
     }
 
+    public Student findStudent(Long id) {
+        return studentRepository.findById(id).get();
+    }
     public List<StudentDTO> getAllStudents() {
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
