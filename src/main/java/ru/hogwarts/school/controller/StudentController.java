@@ -1,6 +1,5 @@
 package ru.hogwarts.school.controller;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,7 +11,6 @@ import ru.hogwarts.school.dto.StudentDTO;
 import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
-import ru.hogwarts.school.service.AvatarService;
 import ru.hogwarts.school.service.StudentService;
 
 import java.io.IOException;
@@ -29,20 +27,14 @@ public class StudentController {
 
     private final StudentService studentService;
 
-    private final AvatarService avatarService;
-
-    public StudentController(StudentService studentService, AvatarService avatarService) {
+    public StudentController(StudentService studentService) {
         this.studentService = studentService;
-        this.avatarService = avatarService;
     }
 
     @PostMapping("/add")
-    public Student addStudent(@RequestParam("/name") String name,
-                              @RequestParam("/age") int age,
-                              @RequestBody Faculty faculty) {
-        Student s = new Student(name, age, faculty);
-        studentService.addStudent(s);
-        return s;
+    public Student addStudent(@RequestBody Student student) {
+        studentService.addStudent(student);
+        return student;
     }
 
     @GetMapping("/get")
@@ -85,17 +77,21 @@ public class StudentController {
 
     @PostMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadAvatar(@PathVariable Long id,
-                                               @RequestParam MultipartFile avatar) throws IOException {
+                                               @RequestParam MultipartFile avatar) {
         if (avatar.getSize() > 1024 * 300) {
             return ResponseEntity.badRequest().body("Размер файла слишком большой!");
         }
-        avatarService.uploadAvatar(id, avatar);
-        return ResponseEntity.ok("Для студента " + studentService.findStudent(id).getName() + " добавлен аватар!");
+        try {
+            studentService.uploadAvatar(id, avatar);
+        } catch (IOException e) {
+            System.out.println("Текст ошибки!");
+        }
+        return ResponseEntity.ok("Для студента " + studentService.findStudent(id).get().getName() + " добавлен аватар!");
     }
 
     @GetMapping(value = "/{id}/avatar/preview")
     public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long id) {
-        Avatar avatar = avatarService.getAvatar(id);
+        Avatar avatar = studentService.getAvatar(id);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
@@ -107,12 +103,11 @@ public class StudentController {
     @GetMapping(value = "/{id}/getAvatar")
     public void downloadCover(@PathVariable Long id,
                               HttpServletResponse response) throws IOException {
-        Avatar avatar = avatarService.getAvatar(id);
+        Avatar avatar = studentService.getAvatar(id);
 
         Path path = Path.of(avatar.getFilePath());
         try (InputStream is = Files.newInputStream(path);
-             OutputStream os = response.getOutputStream())
-        {
+             OutputStream os = response.getOutputStream()) {
             response.setContentType(avatar.getMediaType());
             response.setContentLength((int) avatar.getFileSize());
             is.transferTo(os);
