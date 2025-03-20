@@ -1,6 +1,7 @@
 package ru.hogwarts.school.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -50,7 +51,7 @@ public class StudentController {
     @DeleteMapping("/remove")
     public ResponseEntity<String> deleteStudent(@RequestParam("id") Long id) {
         studentService.removeStudent(id);
-        return ResponseEntity.ok().body("Студент с идентификатором " + id + " удален из списка!");
+        return ResponseEntity.ok("Студент с идентификатором " + id + " удален из списка!");
     }
 
     @PutMapping("/edit")
@@ -65,9 +66,9 @@ public class StudentController {
     }
 
     @GetMapping("/findBetweenAge")
-    public List<Student> findDyAgeBetween(@RequestParam("from") int minAge,
-                                          @RequestParam("to") int maxAge) {
-        return studentService.findByAgeBetween(minAge, maxAge);
+    public List<Student> findDyAgeBetween(@RequestParam("from") int from,
+                                          @RequestParam("to") int to) {
+        return studentService.findByAgeBetween(from, to);
     }
 
     @GetMapping("/getFaculty")

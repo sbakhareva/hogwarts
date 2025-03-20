@@ -82,11 +82,13 @@ public class StudentService {
         Optional.ofNullable(studentRepository.save(student)).orElseThrow(InvalidValueException::new);
     }
 
+    @Transactional
     public void removeStudent(Long id) {
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
         Student s = studentRepository.findById(id).orElseThrow(InvalidValueException::new);
+        avatarRepository.deleteByStudentId(id);
         studentRepository.delete(s);
     }
 

@@ -1,6 +1,7 @@
 package ru.hogwarts.school.model;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 
 import java.util.Arrays;
 import java.util.Objects;
