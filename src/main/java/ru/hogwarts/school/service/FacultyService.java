@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Configuration
 public class FacultyService {
 
     private FacultyRepository facultyRepository;
