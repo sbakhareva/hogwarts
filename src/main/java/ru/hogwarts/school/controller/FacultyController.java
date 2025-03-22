@@ -47,7 +47,7 @@ public class FacultyController {
     }
 
     @GetMapping("/sort")
-    public List<Faculty> sortByColor(@RequestParam("/color") String color) {
+    public List<Faculty> sortByColor(@RequestParam("color") String color) {
         return facultyService.sortByColor(color);
     }
 
