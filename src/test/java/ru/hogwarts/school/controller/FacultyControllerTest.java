@@ -31,21 +31,6 @@ class FacultyControllerTest {
     @Autowired
     private StudentController studentController;
 
-//    @BeforeEach
-//    void setUp() {
-//        Faculty f1 = new Faculty("Faculty", "blue");
-//        Faculty f2 = new Faculty("Shmaculty", "white");
-//        facultyController.addFaculty(f1);
-//        facultyController.addFaculty(f2);
-//    }
-//    @AfterEach
-//    void cleanUp() {
-//        Faculty f1 = facultyController.findByNameOrColor("Faculty", "blue");
-//        Faculty f2 = facultyController.findByNameOrColor("Shmaculty", "white");
-//        facultyController.deleteFaculty(f1.getId());
-//        facultyController.deleteFaculty(f2.getId());
-//    }
-
     @Test
     void contextLoads() {
         assertThat(facultyController).isNotNull();
