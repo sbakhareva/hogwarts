@@ -91,7 +91,7 @@ public class StudentController {
     }
 
     @GetMapping(value = "/{id}/avatar/preview")
-    public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long id) {
+    public ResponseEntity<byte[]> downloadPreview(@PathVariable Long id) {
         Avatar avatar = studentService.getAvatar(id);
 
         HttpHeaders headers = new HttpHeaders();
@@ -102,7 +102,7 @@ public class StudentController {
     }
 
     @GetMapping(value = "/{id}/getAvatar")
-    public void downloadCover(@PathVariable Long id,
+    public void downloadAvatar(@PathVariable Long id,
                               HttpServletResponse response) throws IOException {
         Avatar avatar = studentService.getAvatar(id);
 

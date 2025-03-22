@@ -1,14 +1,17 @@
 package ru.hogwarts.school.controller;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
@@ -20,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpMethod.GET;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class StudentControllerTest {
@@ -175,15 +179,39 @@ class StudentControllerTest {
         studentAvatar.setPreview(bytes);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("avatars", new FileSystemResource("src/test/resources/test.jpg"));
-        HttpEntity<MultiValueMap<String, Object>> responseEntity = new HttpEntity<>(body, headers);
-//
-//        ResponseEntity response = testRestTemplate.exchange(
-//                "http://localhost:" + port + "/school/student/{" + s.getId() + "}/avatar",
-//                HttpMethod.POST,
-//                responseEntity,
-//                String.class
-//        );
-//        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        body.add("file", new FileSystemResource("C:/Users/Снежана/IdeaProjects/school/src/test/resources/test.jpg"));
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+        ResponseEntity response = testRestTemplate.exchange(
+                "http://localhost:" + port + "/school/student/" + s.getId() + "/avatar",
+                HttpMethod.POST,
+                requestEntity,
+                String.class
+        );
+        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    void downloadPreview() throws IOException {
+        Faculty f = facultyRepository.findByNameIgnoreCaseContains("Гриффиндор").get();
+
+        Student s = new Student();
+        s.setName("Barbie");
+        s.setAge(17);
+        s.setFaculty(f);
+        studentController.addStudent(s);
+
+        byte[] bytes = Files.readAllBytes(Path.of("C:/Users/Снежана/IdeaProjects/school/src/test/resources/test.jpg"));
+
+        Avatar studentAvatar = new Avatar();
+        studentAvatar.setStudent(s);
+        studentAvatar.setFilePath("/1.jpg");
+        studentAvatar.setFileSize(studentAvatar.getFileSize());
+        studentAvatar.setMediaType("image/jpg");
+        studentAvatar.setPreview(bytes);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(studentAvatar.getMediaType()));
+        headers.setContentLength(studentAvatar.getPreview().length);
     }
 }
