@@ -12,6 +12,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 
@@ -19,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
 class FacultyControllerTest {
 
     @LocalServerPort
@@ -86,7 +88,6 @@ class FacultyControllerTest {
         );
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(f.getName().equals("Факультет"));
-        facultyController.deleteFaculty(f.getId());
     }
 
     @Test
@@ -98,8 +99,6 @@ class FacultyControllerTest {
         String requestedColor = "white";
         assertThat(this.testRestTemplate.getForObject("http://localhost:" + port + "/school/faculty/sort?color=" + requestedColor, String.class))
                 .contains(requestedColor);
-        facultyController.deleteFaculty(f1.getId());
-        facultyController.deleteFaculty(f2.getId());
     }
 
     @Test
@@ -116,8 +115,6 @@ class FacultyControllerTest {
         assertThat(this.testRestTemplate.getForObject("http://localhost:" + port + "/school/faculty/findBy?color=" + requestedColor, String.class))
                 .isNotNull()
                 .containsIgnoringCase(requestedColor);
-        facultyController.deleteFaculty(f1.getId());
-        facultyController.deleteFaculty(f2.getId());
     }
 
     @Test
@@ -129,7 +126,5 @@ class FacultyControllerTest {
         assertThat(this.testRestTemplate.getForObject("http://localhost:" + port + "/school/faculty/getAllStudents?name=" + f1.getName(), String.class))
                 .isNotNull()
                 .contains(s.getName());
-        studentController.deleteStudent(s.getId());
-        facultyController.deleteFaculty(f1.getId());
     }
 }
