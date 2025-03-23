@@ -43,6 +43,9 @@ public class FacultyService {
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
+        if (!facultyRepository.existsById(faculty.getId())) {
+            throw new InvalidValueException();
+        }
         Optional.of(facultyRepository.save(faculty)).orElseThrow(InvalidValueException::new);
     }
 

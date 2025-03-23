@@ -1,6 +1,7 @@
 package ru.hogwarts.school.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.Matchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.service.FacultyService;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -21,6 +23,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(FacultyController.class)
@@ -89,11 +92,46 @@ class FacultyControllerWebMvcTest {
     }
 
     @Test
-    void editFacultyTest() {
-        Faculty f = new Faculty();
-        f.setName("Faculty");
-        f.setColor("green");
+    void editFacultyTest() throws Exception {
+        Faculty f = new Faculty("Faculty", "green");
+        when(facultyRepository.save(any(Faculty.class))).thenReturn(f);
 
+        JSONObject facultyJSON = new JSONObject();
+        facultyJSON.put("id", f.getId());
+        facultyJSON.put("name", f.getName());
+        facultyJSON.put("color", f.getColor());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/school/faculty/edit")
+                        .content(facultyJSON.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(f.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(f.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.color").value(f.getColor()));
+    }
+
+    @Test
+    void sortByColor() throws Exception {
+        Faculty f = new Faculty();
+        f.setName("Shmaculty");
+        f.setColor("red");
+
+        String requestedColor = "red";
+
+        when(facultyRepository.findAll()).thenReturn(List.of(f));
+        when(facultyService.sortByColor(requestedColor)).thenReturn(List.of(f));
+
+        mockMvc.perform(get("/school/faculty/sort?color=" + requestedColor))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(f.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(f.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].color").value(f.getColor()));
+    }
+
+    @Test
+    void findByNameOrColorTest() {
 
     }
 }
