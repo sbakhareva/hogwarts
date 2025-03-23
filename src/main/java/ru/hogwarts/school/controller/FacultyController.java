@@ -52,7 +52,7 @@ public class FacultyController {
     }
 
     @GetMapping("/findBy")
-    public Faculty findByNameOrColor(@RequestParam(value = "name", required = false) String name,
+    public List<Faculty> findByNameOrColor(@RequestParam(value = "name", required = false) String name,
                                      @RequestParam(value = "color", required = false) String color) {
         return facultyService.findByNameOrColor(name, color);
     }

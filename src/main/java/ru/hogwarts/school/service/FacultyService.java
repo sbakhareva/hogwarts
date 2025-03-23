@@ -77,7 +77,7 @@ public class FacultyService {
         return f;
     }
 
-    public Faculty findByNameOrColor(String name, String color) {
+    public List<Faculty> findByNameOrColor(String name, String color) {
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }

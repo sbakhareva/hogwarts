@@ -12,14 +12,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -131,7 +131,31 @@ class FacultyControllerWebMvcTest {
     }
 
     @Test
-    void findByNameOrColorTest() {
+    void findByNameOrColorTest() throws Exception {
+        Faculty f = new Faculty("Faculty", "blue");
 
+        when(facultyRepository.findByNameIgnoreCaseOrColorIgnoreCaseContains(anyString(), anyString())).thenReturn(List.of(f));
+        when(facultyService.findByNameOrColor(anyString(), anyString())).thenReturn(List.of(f));
+
+        mockMvc.perform(get("/school/faculty/findBy?name=a&color=b"))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(f.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(f.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].color").value(f.getColor()));
+    }
+
+    @Test
+    void getAllStudentsTest() throws Exception {
+        Faculty f = new Faculty("Faculty", "color");
+        Student s = new Student("Student", 13, f);
+
+        when(facultyRepository.findByNameIgnoreCaseContains(anyString())).thenReturn(Optional.of(f));
+        when(facultyService.getAllStudentsOfFaculty(anyString())).thenReturn(List.of(s));
+
+        mockMvc.perform(get("/school/faculty/getAllStudents?name=a"))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(s.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(s.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].age").value(s.getAge()));
     }
 }
