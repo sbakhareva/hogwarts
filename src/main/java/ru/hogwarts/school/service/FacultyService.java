@@ -1,5 +1,6 @@
 package ru.hogwarts.school.service;
 
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
@@ -14,10 +15,13 @@ import java.util.Optional;
 @Service
 public class FacultyService {
 
-    private final FacultyRepository facultyRepository;
+    private FacultyRepository facultyRepository;
 
     public FacultyService(FacultyRepository facultyRepository) {
         this.facultyRepository = facultyRepository;
+    }
+
+    public FacultyService(){
     }
 
     public boolean storageIsEmpty() {
@@ -38,6 +42,9 @@ public class FacultyService {
     public void editFaculty(Faculty faculty) {
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
+        }
+        if (!facultyRepository.existsById(faculty.getId())) {
+            throw new InvalidValueException();
         }
         Optional.of(facultyRepository.save(faculty)).orElseThrow(InvalidValueException::new);
     }
@@ -70,7 +77,7 @@ public class FacultyService {
         return f;
     }
 
-    public Faculty findByNameOrColor(String name, String color) {
+    public List<Faculty> findByNameOrColor(String name, String color) {
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
@@ -85,5 +92,4 @@ public class FacultyService {
         Optional<Faculty> f = Optional.ofNullable(facultyRepository.findByNameIgnoreCaseContains(name).orElseThrow(InvalidValueException::new));
         return f.get().getStudents();
     }
-
 }
