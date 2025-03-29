@@ -29,7 +29,6 @@ class FacultyControllerTest {
     private FacultyController facultyController;
     @Autowired
     private TestRestTemplate testRestTemplate;
-
     @Autowired
     private StudentController studentController;
 
