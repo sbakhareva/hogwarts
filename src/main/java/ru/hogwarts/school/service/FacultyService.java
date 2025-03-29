@@ -20,9 +20,6 @@ public class FacultyService {
         this.facultyRepository = facultyRepository;
     }
 
-    public FacultyService(){
-    }
-
     public boolean storageIsEmpty() {
         return facultyRepository.findAll().isEmpty();
     }
