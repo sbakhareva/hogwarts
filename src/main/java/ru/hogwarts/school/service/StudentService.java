@@ -178,4 +178,19 @@ public class StudentService {
         return Optional.of(studentRepository.findStudentByNameIgnoreCaseContains(name).get().getFaculty())
                 .orElseThrow(InvalidValueException::new);
     }
+
+    public String getNumberOfStudents() {
+        return "Общее количество студентов в школе: " + studentRepository.countStudents();
+    }
+
+    public String getAvgAge() {
+        return "Средний возраст учеников школы: " + studentRepository.countAvgAge();
+    }
+
+    public List<StudentDTO> getLastFiveStudents() {
+        return studentRepository.getLastFiveStudents().stream()
+                .map(studentDTOMapper)
+                .collect(Collectors.toList());
+    }
+
 }

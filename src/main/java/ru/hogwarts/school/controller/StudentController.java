@@ -1,6 +1,7 @@
 package ru.hogwarts.school.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.hibernate.dialect.unique.CreateTableUniqueDelegate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -102,7 +103,7 @@ public class StudentController {
 
     @GetMapping(value = "/{id}/getAvatar")
     public void downloadAvatar(@PathVariable Long id,
-                              HttpServletResponse response) throws IOException {
+                               HttpServletResponse response) throws IOException {
         Avatar avatar = studentService.getAvatar(id);
 
         Path path = Path.of(avatar.getFilePath());
@@ -112,5 +113,20 @@ public class StudentController {
             response.setContentLength((int) avatar.getFileSize());
             is.transferTo(os);
         }
+    }
+
+    @GetMapping("/getNumber")
+    public String getNumberOfStudents() {
+        return studentService.getNumberOfStudents();
+    }
+
+    @GetMapping("/getAvgAge")
+    public String getAvgAge() {
+        return studentService.getAvgAge();
+    }
+
+    @GetMapping("/getLastFiveStudents")
+    public List<StudentDTO> getLastFiveStudents() {
+        return studentService.getLastFiveStudents();
     }
 }
