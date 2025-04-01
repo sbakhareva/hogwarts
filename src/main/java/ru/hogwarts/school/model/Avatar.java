@@ -1,11 +1,11 @@
 package ru.hogwarts.school.model;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
+import org.hibernate.annotations.Type;
 
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Optional;
 
 @Entity
 public class Avatar {
