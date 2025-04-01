@@ -1,5 +1,6 @@
 package ru.hogwarts.school.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Type;
@@ -17,10 +18,12 @@ public class Avatar {
     private long fileSize;
     private String mediaType;
     @Lob
+    @JsonIgnore
     private byte[] preview;
 
     @OneToOne
     @JoinColumn(name = "student_id")
+    @JsonIgnore
     private Student student;
 
     public Avatar() {

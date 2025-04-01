@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 @RestController
 @RequestMapping("/school/avatar")
@@ -67,5 +68,10 @@ public class AvatarController {
         } catch (IOException e) {
             System.out.println("Текст ошибки!");
         }
+    }
+
+    @GetMapping(value = "/get-all")
+    public List<Avatar> getAllAvatars(@RequestParam int page, @RequestParam int size) {
+        return avatarService.getAllAvatars(page, size);
     }
 }
