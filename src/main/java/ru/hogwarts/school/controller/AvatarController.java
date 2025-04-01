@@ -28,7 +28,7 @@ public class AvatarController {
         this.studentService = studentService;
     }
 
-    @PostMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/{id}/upload-avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadAvatar(@PathVariable Long id,
                                                @RequestParam MultipartFile avatar) {
         if (avatar.getSize() > 1024 * 1024 * 5) {
@@ -42,7 +42,7 @@ public class AvatarController {
         return ResponseEntity.ok("Для студента " + studentService.findStudent(id).get().getName() + " добавлен аватар!");
     }
 
-    @GetMapping(value = "/{id}/avatar/preview")
+    @GetMapping(value = "/{id}/avatar/download-preview")
     public ResponseEntity<byte[]> downloadPreview(@PathVariable Long id) {
         Avatar avatar = avatarService.getAvatar(id);
 
@@ -53,7 +53,7 @@ public class AvatarController {
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getPreview());
     }
 
-    @GetMapping(value = "/{id}/getAvatar")
+    @GetMapping(value = "/{id}/download-avatar")
     public void downloadAvatar(@PathVariable Long id,
                                HttpServletResponse response) {
         Avatar avatar = avatarService.getAvatar(id);

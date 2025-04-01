@@ -93,4 +93,8 @@ public class AvatarService {
             return baos.toByteArray();
         }
     }
+
+    public Page<List<Avatar>> getAvatarsByPage(int page, int size) {
+
+    }
 }

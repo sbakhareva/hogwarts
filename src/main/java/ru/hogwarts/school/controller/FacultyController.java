@@ -18,7 +18,7 @@ public class FacultyController {
         this.facultyService = facultyService;
     }
 
-    @GetMapping("/getAll")
+    @GetMapping("/get-all")
     public List<Faculty> getFaculties() {
         return facultyService.getAllFaculties();
     }
@@ -51,13 +51,13 @@ public class FacultyController {
         return facultyService.sortByColor(color);
     }
 
-    @GetMapping("/findBy")
+    @GetMapping("/find-by")
     public List<Faculty> findByNameOrColor(@RequestParam(value = "name", required = false) String name,
                                      @RequestParam(value = "color", required = false) String color) {
         return facultyService.findByNameOrColor(name, color);
     }
 
-    @GetMapping("/getAllStudents")
+    @GetMapping("/get-all-students")
     public List<Student> getAllStudentsOfFaculty(@RequestParam("name") String name) {
         return facultyService.getAllStudentsOfFaculty(name);
     }

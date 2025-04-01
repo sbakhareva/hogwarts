@@ -30,7 +30,7 @@ public class StudentController {
         return studentService.getStudentByID(id);
     }
 
-    @GetMapping("/getAll")
+    @GetMapping("/get-all")
     public List<StudentDTO> getStudents() {
         return studentService.getAllStudents();
     }
@@ -52,28 +52,28 @@ public class StudentController {
         return studentService.sortByAge(age);
     }
 
-    @GetMapping("/findBetweenAge")
+    @GetMapping("/find-between-age")
     public List<Student> findDyAgeBetween(@RequestParam("from") int from,
                                           @RequestParam("to") int to) {
         return studentService.findByAgeBetween(from, to);
     }
 
-    @GetMapping("/getFaculty")
+    @GetMapping("/get-faculty")
     public Faculty getStudentsFaculty(@RequestParam("name") String name) {
         return studentService.getStudentsFaculty(name);
     }
 
-    @GetMapping("/getNumber")
+    @GetMapping("/get-number")
     public String getNumberOfStudents() {
         return studentService.getNumberOfStudents();
     }
 
-    @GetMapping("/getAvgAge")
+    @GetMapping("/get-avg-age")
     public String getAvgAge() {
         return studentService.getAvgAge();
     }
 
-    @GetMapping("/getLastFiveStudents")
+    @GetMapping("/get-last-five-students")
     public List<StudentDTO> getLastFiveStudents() {
         return studentService.getLastFiveStudents();
     }
