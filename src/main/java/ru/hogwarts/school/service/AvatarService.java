@@ -72,6 +72,9 @@ public class AvatarService {
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
+        if (!avatarRepository.existsById(studentId)) {
+            throw new InvalidValueException();
+        }
         return avatarRepository.findByStudentId(studentId).orElse(new Avatar());
     }
 
@@ -102,5 +105,10 @@ public class AvatarService {
         }
         PageRequest pageRequest = PageRequest.of(page - 1, size);
           return avatarRepository.findAll(pageRequest).getContent();
+    }
+
+    @Transactional
+    public void deleteAvatar(Long studentId) {
+        avatarRepository.deleteByStudentId(studentId);
     }
 }
