@@ -80,4 +80,9 @@ public class AvatarController {
         avatarService.deleteAvatar(studentId);
         return "Фото профиля для студента " + studentService.findStudent(studentId).get().getName() + " успешно удалено!";
     }
+
+    @DeleteMapping(value = "/remove-unused")
+    public void removeUnused() {
+        avatarService.removeUnused();
+    }
 }

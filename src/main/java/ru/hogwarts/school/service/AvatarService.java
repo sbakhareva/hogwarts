@@ -111,4 +111,8 @@ public class AvatarService {
     public void deleteAvatar(Long studentId) {
         avatarRepository.deleteByStudentId(studentId);
     }
+
+    public void removeUnused() {
+        avatarRepository.removeUnused();
+    }
 }

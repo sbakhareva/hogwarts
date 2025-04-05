@@ -13,4 +13,7 @@ public interface AvatarRepository extends JpaRepository<Avatar, Long> {
     Optional<Avatar> findByStudentId(Long studentId);
 
     void deleteByStudentId(Long id);
+
+    @Query(value = "delete from avatar where student_id = null", nativeQuery = true)
+    void removeUnused();
 }
