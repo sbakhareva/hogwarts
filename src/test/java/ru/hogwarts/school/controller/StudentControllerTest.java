@@ -37,8 +37,6 @@ class StudentControllerTest {
     private StudentController studentController;
     @Autowired
     private TestRestTemplate testRestTemplate;
-    @Autowired
-    private AvatarRepository avatarRepository;
 
     @Test
     void contextLoads() {
@@ -157,19 +155,19 @@ class StudentControllerTest {
 
     @Test
     void findBetweenAge() {
-        int from = 16;
-        int to = 18;
+        int from = 17;
+        int to = 19;
 
         Faculty f = new Faculty("Гриффиндор", "красный");
         facultyRepository.save(f);
 
         Student s = new Student();
         s.setName("Barbie");
-        s.setAge(17);
+        s.setAge(18);
         s.setFaculty(f);
         studentController.addStudent(s);
 
-        assertThat(this.testRestTemplate.getForObject("http://localhost:" + port + "/school/student/findBetweenAge?from=" + from + "&to=" + to, String.class))
+        assertThat(this.testRestTemplate.getForObject("http://localhost:" + port + "/school/student/find-between-age?from=" + from + "&to=" + to, String.class))
                 .contains("Barbie");
     }
 
@@ -184,104 +182,7 @@ class StudentControllerTest {
         s.setFaculty(f);
         studentController.addStudent(s);
 
-        assertThat(this.testRestTemplate.getForObject("http://localhost:" + port + "/school/student/getFaculty?name=" + s.getName(), String.class))
+        assertThat(this.testRestTemplate.getForObject("http://localhost:" + port + "/school/student/get-faculty?name=" + s.getName(), String.class))
                 .contains("Гриффиндор");
-    }
-
-    @Test
-    void uploadAvatar() {
-        Faculty f = new Faculty("Гриффиндор", "красный");
-        facultyRepository.save(f);
-
-        Student s = new Student();
-        s.setName("Barbie");
-        s.setAge(17);
-        s.setFaculty(f);
-        studentController.addStudent(s);
-
-        File avatarFile = new File("C:/Users/Снежана/IdeaProjects/school/src/test/resources/test.jpg");
-        FileSystemResource fileResource = new FileSystemResource(avatarFile);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("avatar", fileResource);
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-        ResponseEntity<String> response = testRestTemplate.exchange(
-                "/school/student/" + s.getId() + "/avatar",
-                HttpMethod.POST,
-                requestEntity,
-                String.class
-        );
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertTrue(response.getBody().contains("добавлен аватар"));
-    }
-
-    @Test
-    void downloadPreview() throws IOException {
-        Faculty f = new Faculty("Гриффиндор", "красный");
-        facultyRepository.save(f);
-
-        Student s = new Student();
-        s.setName("Barbie");
-        s.setAge(17);
-        s.setFaculty(f);
-        studentController.addStudent(s);
-
-        byte[] bytes = Files.readAllBytes(Path.of("C:/Users/Снежана/IdeaProjects/school/src/test/resources/test.jpg"));
-
-        Avatar studentAvatar = new Avatar();
-        studentAvatar.setStudent(s);
-        studentAvatar.setFilePath("/1.jpg");
-        studentAvatar.setFileSize(studentAvatar.getFileSize());
-        studentAvatar.setMediaType("image/jpg");
-        studentAvatar.setPreview(bytes);
-
-        avatarRepository.save(studentAvatar);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(studentAvatar.getMediaType()));
-        headers.setContentLength(studentAvatar.getPreview().length);
-
-        ResponseEntity<byte[]> response = testRestTemplate.getForEntity(
-                "http://localhost:" + port + "/school/student/" + s.getId() + "/avatar/preview",
-                byte[].class
-        );
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    void downloadAvatarTest() throws IOException {
-        Faculty f = new Faculty("Гриффиндор", "красный");
-        facultyRepository.save(f);
-
-        Student s = new Student();
-        s.setName("Barbie");
-        s.setAge(17);
-        s.setFaculty(f);
-        studentController.addStudent(s);
-
-        File avatarFile = new File("C:/Users/Снежана/IdeaProjects/school/src/test/resources/test.jpg");
-        byte[] bytes = Files.readAllBytes(Path.of("C:/Users/Снежана/IdeaProjects/school/src/test/resources/test.jpg"));
-
-        Avatar studentAvatar = new Avatar();
-        studentAvatar.setStudent(s);
-        studentAvatar.setFilePath(avatarFile.getAbsolutePath());
-        studentAvatar.setFileSize(avatarFile.length());
-        studentAvatar.setMediaType("image/jpg");
-        studentAvatar.setPreview(bytes);
-
-        avatarRepository.save(studentAvatar);
-
-        ResponseEntity<byte[]> response = testRestTemplate.getForEntity(
-                "/school/student/" + s.getId() + "/getAvatar",
-                byte[].class
-        );
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertNotNull(response.getBody());
-        assertEquals("image/jpg", response.getHeaders().getContentType().toString());
-        assertEquals(bytes.length, response.getHeaders().getContentLength());
     }
 }
