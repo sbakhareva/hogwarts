@@ -82,7 +82,7 @@ class StudentControllerWebMvcTest {
     @Test
     void getAllStudentsTest() throws Exception {
         Faculty f = new Faculty("Faculty", "yellow");
-        Student s = new Student("Student", 13, f);
+        Student s = new Student("Student", 17, f);
 
         when(studentDTOMapper.apply(any(Student.class)))
                 .thenReturn(new StudentDTO(s.getId(), s.getName(), s.getAge(), s.getFaculty().getName()));
@@ -91,7 +91,7 @@ class StudentControllerWebMvcTest {
         when(studentRepository.findAll()).thenReturn(List.of(s));
         when(studentService.getAllStudents()).thenReturn(List.of(sDto));
 
-        mockMvc.perform(get("/school/student/getAll"))
+        mockMvc.perform(get("/school/student/get-all"))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(s.getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(s.getName()))
@@ -150,12 +150,12 @@ class StudentControllerWebMvcTest {
     @Test
     void findBetweenAgeTest() throws Exception {
         Faculty f = new Faculty("Faculty", "yellow");
-        Student s = new Student("Student", 13, f);
+        Student s = new Student("Student", 17, f);
 
         when(studentRepository.findAllByAgeBetween(anyInt(), anyInt())).thenReturn(List.of(s));
         when(studentService.findByAgeBetween(anyInt(), anyInt())).thenReturn(List.of(s));
 
-        mockMvc.perform(get("/school/student/findBetweenAge?from=11&to=16"))
+        mockMvc.perform(get("/school/student/find-between-age?from=11&to=16"))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(s.getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(s.getName()))
@@ -165,30 +165,16 @@ class StudentControllerWebMvcTest {
     @Test
     void getFacultyTest() throws Exception {
         Faculty f = new Faculty("Faculty", "yellow");
-        Student s = new Student("Student", 13, f);
+        Student s = new Student("Student", 17, f);
 
         when(studentRepository.findStudentByNameIgnoreCaseContains(anyString())).thenReturn(Optional.of(s));
         when(studentService.getStudentsFaculty(anyString())).thenReturn(f);
 
-        mockMvc.perform(get("/school/student/getFaculty?name=Student"))
+        mockMvc.perform(get("/school/student/get-faculty?name=Student"))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(f.getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(f.getName()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.color").value(f.getColor()));
     }
 
-    @Test
-    void uploadAvatarTest() {
-        //по ситуации
-    }
-
-    @Test
-    void downloadAvatarTest() {
-        //по ситуации
-    }
-
-    @Test
-    void downloadPreviewTest() {
-        //по ситуации
-    }
 }
