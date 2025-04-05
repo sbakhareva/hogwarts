@@ -1,11 +1,12 @@
 package ru.hogwarts.school.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
+import org.hibernate.annotations.Type;
 
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Optional;
 
 @Entity
 public class Avatar {
@@ -17,10 +18,12 @@ public class Avatar {
     private long fileSize;
     private String mediaType;
     @Lob
+    @JsonIgnore
     private byte[] preview;
 
     @OneToOne
     @JoinColumn(name = "student_id")
+    @JsonIgnore
     private Student student;
 
     public Avatar() {
