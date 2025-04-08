@@ -134,7 +134,7 @@ class StudentControllerTest {
                 String.class
         );
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(s.getFaculty().getName().equals("Слизерин"));
+        assertThat(response.toString().contains("Слизерин"));
     }
 
     @Test
