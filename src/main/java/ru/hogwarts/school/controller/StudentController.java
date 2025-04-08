@@ -1,5 +1,6 @@
 package ru.hogwarts.school.controller;
 
+import jakarta.websocket.server.PathParam;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.dto.StudentDTO;
@@ -26,7 +27,7 @@ public class StudentController {
     }
 
     @GetMapping("/get")
-    public Optional<StudentDTO> getStudentByID(@RequestParam("id") Long id) {
+    public Optional<StudentDTO> getStudentByID(@PathParam("id") Long id) {
         return studentService.getStudentByID(id);
     }
 
@@ -53,8 +54,8 @@ public class StudentController {
     }
 
     @GetMapping("/find-between-age")
-    public List<Student> findDyAgeBetween(@RequestParam("from") int from,
-                                          @RequestParam("to") int to) {
+    public List<Student> findDyAgeBetween(@RequestParam int from,
+                                          @RequestParam int to) {
         return studentService.findByAgeBetween(from, to);
     }
 

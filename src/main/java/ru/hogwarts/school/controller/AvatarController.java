@@ -74,4 +74,15 @@ public class AvatarController {
     public List<Avatar> getAllAvatars(@RequestParam int page, @RequestParam int size) {
         return avatarService.getAllAvatars(page, size);
     }
+
+    @DeleteMapping(value = "/delete")
+    public String deleteAvatar(@RequestParam("student-id") Long studentId) {
+        avatarService.deleteAvatar(studentId);
+        return "Фото профиля для студента " + studentService.findStudent(studentId).get().getName() + " успешно удалено!";
+    }
+
+    @DeleteMapping(value = "/remove-unused")
+    public void removeUnused() {
+        avatarService.removeUnused();
+    }
 }
