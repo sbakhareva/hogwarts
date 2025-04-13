@@ -37,9 +37,9 @@ public class StudentController {
     }
 
     @DeleteMapping("/remove")
-    public ResponseEntity<String> deleteStudent(@RequestParam("id") Long id) {
+    public String deleteStudent(@RequestParam("id") Long id) {
         studentService.removeStudent(id);
-        return ResponseEntity.ok("Студент с идентификатором " + id + " удален из списка!");
+        return "Студент с идентификатором " + id + " удален из списка!";
     }
 
     @PutMapping("/edit")
@@ -78,4 +78,6 @@ public class StudentController {
     public List<StudentDTO> getLastFiveStudents() {
         return studentService.getLastFiveStudents();
     }
+
+    //
 }

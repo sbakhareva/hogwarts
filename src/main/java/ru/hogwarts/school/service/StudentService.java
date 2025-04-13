@@ -84,7 +84,7 @@ public class StudentService {
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
-        if (age == 0) {
+        if (age <= 0) {
             throw new InvalidValueException();
         }
         return studentRepository.findAll().stream()
@@ -107,22 +107,33 @@ public class StudentService {
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
-        return Optional.of(studentRepository.findStudentByNameIgnoreCaseContains(name).get().getFaculty())
+        Student student = studentRepository.findStudentByNameIgnoreCaseContains(name).orElseThrow(InvalidValueException::new);
+        return Optional.of(student.getFaculty())
                 .orElseThrow(InvalidValueException::new);
     }
 
     public String getNumberOfStudents() {
+        if (storageIsEmpty()) {
+            throw new EmptyStorageException();
+        }
         return "Общее количество студентов в школе: " + studentRepository.countStudents();
     }
 
     public String getAvgAge() {
+        if (storageIsEmpty()) {
+            throw new EmptyStorageException();
+        }
         return "Средний возраст учеников школы: " + studentRepository.countAvgAge();
     }
 
     public List<StudentDTO> getLastFiveStudents() {
+        if (storageIsEmpty()) {
+            throw new EmptyStorageException();
+        }
         return studentRepository.getLastFiveStudents().stream()
                 .map(studentDTOMapper)
                 .collect(Collectors.toList());
     }
 
+    //
 }
