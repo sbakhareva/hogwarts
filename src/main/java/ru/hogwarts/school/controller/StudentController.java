@@ -78,6 +78,4 @@ public class StudentController {
     public List<StudentDTO> getLastFiveStudents() {
         return studentService.getLastFiveStudents();
     }
-
-    //
 }
