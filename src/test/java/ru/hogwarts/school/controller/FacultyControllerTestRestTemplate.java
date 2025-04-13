@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-class FacultyControllerTest {
+class FacultyControllerTestRestTemplate {
 
     @LocalServerPort
     private int port;
