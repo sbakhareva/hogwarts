@@ -70,7 +70,7 @@ class StudentControllerWebMvcTest {
         StudentDTO sDto = new StudentDTO(s.getId(), s.getName(), s.getAge(), s.getFaculty().getName());
 
         when(studentRepository.findById(anyLong())).thenReturn(Optional.of(s));
-        when(studentService.getStudentByID(anyLong())).thenReturn(Optional.of(sDto));
+        when(studentService.getStudentByID(anyLong())).thenReturn(sDto);
 
         mockMvc.perform(get("/school/student/get?id=1"))
                 .andExpect(status().isOk())

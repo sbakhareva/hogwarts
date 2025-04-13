@@ -42,12 +42,13 @@ public class StudentService {
         Optional.of(studentRepository.save(student)).orElseThrow(InvalidValueException::new);
     }
 
-    public Optional<StudentDTO> getStudentByID(Long id) {
+    public StudentDTO getStudentByID(Long id) {
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
-        return Optional.ofNullable(studentRepository.findById(id)
-                .map(studentDTOMapper)).orElseThrow(InvalidValueException::new);
+        StudentDTO student = studentRepository.findById(id).map(studentDTOMapper)
+                .orElseThrow(InvalidValueException::new);
+        return student;
     }
 
     public Optional<Student> findStudent(Long id) {
@@ -63,11 +64,11 @@ public class StudentService {
                 .collect(Collectors.toList());
     }
 
-    public void updateStudent(Student student) {
+    public Student updateStudent(Student student) {
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
-        Optional.ofNullable(studentRepository.save(student)).orElseThrow(InvalidValueException::new);
+        return Optional.of(studentRepository.save(student)).orElseThrow(InvalidValueException::new);
     }
 
     @Transactional

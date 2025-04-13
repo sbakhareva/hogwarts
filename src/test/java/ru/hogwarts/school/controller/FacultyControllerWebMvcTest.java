@@ -132,7 +132,7 @@ class FacultyControllerWebMvcTest {
         when(facultyRepository.findByNameIgnoreCaseOrColorIgnoreCaseContains(anyString(), anyString())).thenReturn(List.of(f));
         when(facultyService.findByNameOrColor(anyString(), anyString())).thenReturn(List.of(f));
 
-        mockMvc.perform(get("/school/faculty/findBy?name=a&color=b"))
+        mockMvc.perform(get("/school/faculty/find-by?name=a&color=b"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(f.getId()))
                 .andExpect(jsonPath("$[0].name").value(f.getName()))
@@ -147,7 +147,7 @@ class FacultyControllerWebMvcTest {
         when(facultyRepository.findByNameIgnoreCaseContains(anyString())).thenReturn(Optional.of(f));
         when(facultyService.getAllStudentsOfFaculty(anyString())).thenReturn(List.of(s));
 
-        mockMvc.perform(get("/school/faculty/getAllStudents?name=a"))
+        mockMvc.perform(get("/school/faculty/get-all-students?name=a"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(s.getId()))
                 .andExpect(jsonPath("$[0].name").value(s.getName()))
