@@ -1,10 +1,11 @@
 package ru.hogwarts.school.service;
 
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.dto.StudentDTO;
 import ru.hogwarts.school.dto.StudentDTOMapper;
-import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.model.exception.EmptyStorageException;
@@ -23,6 +24,7 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final StudentDTOMapper studentDTOMapper;
     private final FacultyService facultyService;
+    private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
     public StudentService(AvatarRepository avatarRepository, StudentRepository studentRepository, StudentDTOMapper studentDTOMapper, FacultyService facultyService) {
         this.avatarRepository = avatarRepository;
@@ -36,6 +38,7 @@ public class StudentService {
     }
 
     public void addStudent(Student student) {
+        logger.debug("Добавление студента в базу данных");
         if (facultyService.getAllFaculties().isEmpty()) {
             throw new EmptyStorageException();
         }
