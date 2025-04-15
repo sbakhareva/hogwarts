@@ -34,7 +34,6 @@ public class StudentService {
     }
 
     public boolean storageIsEmpty() {
-        logger.error("Хранилище пустое");
         return studentRepository.findAll().isEmpty();
     }
 
@@ -49,6 +48,7 @@ public class StudentService {
     public void addStudent(Student student) {
         logger.info("Добавление студента в базу данных");
         if (facultyService.getAllFaculties().isEmpty()) {
+            logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
         if (!isStudentOldEnough(student.getAge())) {
@@ -62,8 +62,9 @@ public class StudentService {
     }
 
     public StudentDTO getStudentByID(Long id) {
-        logger.info("Метод поиска студента по id запущен...");
+        logger.info("Метод поиска студента по id");
         if (storageIsEmpty()) {
+            logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
         return studentRepository.findById(id).map(studentDTOMapper)
@@ -78,8 +79,9 @@ public class StudentService {
     }
 
     public List<StudentDTO> getAllStudents() {
-        logger.info("Метод получения всех студентов запущен...");
+        logger.info("Метод получения всех студентов");
         if (storageIsEmpty()) {
+            logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
         return studentRepository.findAll().stream()
@@ -88,8 +90,9 @@ public class StudentService {
     }
 
     public Student updateStudent(Student student) {
-        logger.info("Метод обновления данных студента запущен...");
+        logger.info("Метод обновления данных студента");
         if (storageIsEmpty()) {
+            logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
         return Optional.of(studentRepository.save(student)).orElseThrow(() -> {
@@ -101,8 +104,9 @@ public class StudentService {
 
     @Transactional
     public void removeStudent(Long id) {
-        logger.info("Метод удаления данных студента запущен");
+        logger.info("Метод удаления данных студента");
         if (storageIsEmpty()) {
+            logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
         Student s = studentRepository.findById(id).orElseThrow(() -> {
@@ -114,8 +118,9 @@ public class StudentService {
     }
 
     public List<Student> sortByAge(int age) {
-        logger.info("Метод сортировки студентов по возрасту запущен...");
+        logger.info("Метод сортировки студентов по возрасту");
         if (storageIsEmpty()) {
+            logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
         if (age <= 16) {
@@ -128,8 +133,9 @@ public class StudentService {
     }
 
     public List<Student> findByAgeBetween(int ageMin, int ageMax) {
-        logger.info("Метод поиска студентов в возрастном диапазоне запущен...");
+        logger.info("Метод поиска студентов в возрастном диапазоне");
         if (storageIsEmpty()) {
+            logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
         List<Student> sorted = studentRepository.findAllByAgeBetween(ageMin, ageMax);
@@ -141,8 +147,9 @@ public class StudentService {
     }
 
     public Faculty getStudentsFaculty(String name) {
-        logger.info("Метод получения факультета студента запущен...");
+        logger.info("Метод получения факультета студента");
         if (storageIsEmpty()) {
+            logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
         Student student = studentRepository.findStudentByNameIgnoreCaseContains(name).orElseThrow(() -> {
@@ -153,24 +160,27 @@ public class StudentService {
     }
 
     public String getNumberOfStudents() {
-        logger.info("Метод получения количества студентов запущен...");
+        logger.info("Метод получения количества студентов");
         if (storageIsEmpty()) {
+            logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
         return "Общее количество студентов в школе: " + studentRepository.countStudents();
     }
 
     public String getAvgAge() {
-        logger.info("Метод получения среднего возраста студентов запущен...");
+        logger.info("Метод получения среднего возраста студентов");
         if (storageIsEmpty()) {
+            logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
         return "Средний возраст учеников школы: " + studentRepository.countAvgAge();
     }
 
     public List<StudentDTO> getLastFiveStudents() {
-        logger.info("Метод получения последних пяти студентов запущен...");
+        logger.info("Метод получения последних пяти студентов");
         if (storageIsEmpty()) {
+            logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
         return studentRepository.getLastFiveStudents().stream()
