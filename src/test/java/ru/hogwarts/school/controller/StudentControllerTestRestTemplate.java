@@ -17,7 +17,7 @@ import ru.hogwarts.school.repository.FacultyRepository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Profile("test")
+@ActiveProfiles("test")
 class StudentControllerTestRestTemplate {
 
     @LocalServerPort
