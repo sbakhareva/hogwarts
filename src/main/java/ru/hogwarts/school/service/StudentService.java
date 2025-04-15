@@ -34,24 +34,43 @@ public class StudentService {
     }
 
     public boolean storageIsEmpty() {
+        logger.error("Хранилище пустое");
         return studentRepository.findAll().isEmpty();
     }
 
+    public boolean isStudentOldEnough(int age) {
+        return age > 16;
+    }
+
+//    public boolean nameIsNotUnique(String name) {
+//        return studentRepository.findAll().contains(name);
+//    }
+
     public void addStudent(Student student) {
-        logger.debug("Добавление студента в базу данных");
+        logger.info("Добавление студента в базу данных");
         if (facultyService.getAllFaculties().isEmpty()) {
             throw new EmptyStorageException();
         }
-        Optional.of(studentRepository.save(student)).orElseThrow(InvalidValueException::new);
+        if (!isStudentOldEnough(student.getAge())) {
+            logger.error("Возраст студента должен быть больше 16");
+            throw new InvalidValueException();
+        }
+        Optional.of(studentRepository.save(student)).orElseThrow(() -> {
+            logger.error("Переданы некорректные данные, невозможно сохранить");
+            return new InvalidValueException();
+        });
     }
 
     public StudentDTO getStudentByID(Long id) {
+        logger.info("Метод поиска студента по id запущен...");
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
-        StudentDTO student = studentRepository.findById(id).map(studentDTOMapper)
-                .orElseThrow(InvalidValueException::new);
-        return student;
+        return studentRepository.findById(id).map(studentDTOMapper)
+                .orElseThrow(() -> {
+                    logger.error("В хранилище нет студента с переданным идентификатором");
+                    return new InvalidValueException();
+                });
     }
 
     public Optional<Student> findStudent(Long id) {
@@ -59,6 +78,7 @@ public class StudentService {
     }
 
     public List<StudentDTO> getAllStudents() {
+        logger.info("Метод получения всех студентов запущен...");
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
@@ -68,27 +88,38 @@ public class StudentService {
     }
 
     public Student updateStudent(Student student) {
+        logger.info("Метод обновления данных студента запущен...");
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
-        return Optional.of(studentRepository.save(student)).orElseThrow(InvalidValueException::new);
+        return Optional.of(studentRepository.save(student)).orElseThrow(() -> {
+            logger.error("Переданы некорректные данные студента или студента, невозможно обновить данные или сохранить");
+            return new InvalidValueException();
+
+        });
     }
 
     @Transactional
     public void removeStudent(Long id) {
+        logger.info("Метод удаления данных студента запущен");
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
-        Student s = studentRepository.findById(id).orElseThrow(InvalidValueException::new);
+        Student s = studentRepository.findById(id).orElseThrow(() -> {
+            logger.error("Студента с переданным идентификатором не найдено");
+            return new InvalidValueException();
+        });
         avatarRepository.deleteByStudentId(id);
         studentRepository.delete(s);
     }
 
     public List<Student> sortByAge(int age) {
+        logger.info("Метод сортировки студентов по возрасту запущен...");
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
-        if (age <= 0) {
+        if (age <= 16) {
+            logger.warn("Переданный возраст меньше или равен минимальному возрасту ученика");
             throw new InvalidValueException();
         }
         return studentRepository.findAll().stream()
@@ -97,26 +128,32 @@ public class StudentService {
     }
 
     public List<Student> findByAgeBetween(int ageMin, int ageMax) {
+        logger.info("Метод поиска студентов в возрастном диапазоне запущен...");
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
         List<Student> sorted = studentRepository.findAllByAgeBetween(ageMin, ageMax);
-        if (ageMin >= ageMax || ageMax == 0 || sorted.isEmpty()) {
+        if (ageMin >= ageMax || ageMin <= 16 || sorted.isEmpty()) {
+            logger.error("Передан неправильный возрастной диапазон или студентов с возрастом в это диапазоне не найдено");
             throw new InvalidValueException();
         }
         return sorted;
     }
 
     public Faculty getStudentsFaculty(String name) {
+        logger.info("Метод получения факультета студента запущен...");
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
-        Student student = studentRepository.findStudentByNameIgnoreCaseContains(name).orElseThrow(InvalidValueException::new);
-        return Optional.of(student.getFaculty())
-                .orElseThrow(InvalidValueException::new);
+        Student student = studentRepository.findStudentByNameIgnoreCaseContains(name).orElseThrow(() -> {
+            logger.error("Студента с таким именем нет в ханилище");
+            return new InvalidValueException();
+        });
+        return student.getFaculty();
     }
 
     public String getNumberOfStudents() {
+        logger.info("Метод получения количества студентов запущен...");
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
@@ -124,6 +161,7 @@ public class StudentService {
     }
 
     public String getAvgAge() {
+        logger.info("Метод получения среднего возраста студентов запущен...");
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
@@ -131,6 +169,7 @@ public class StudentService {
     }
 
     public List<StudentDTO> getLastFiveStudents() {
+        logger.info("Метод получения последних пяти студентов запущен...");
         if (storageIsEmpty()) {
             throw new EmptyStorageException();
         }
