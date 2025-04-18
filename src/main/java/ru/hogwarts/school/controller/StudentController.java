@@ -85,34 +85,65 @@ public class StudentController {
                 .map(StudentDTO::name).toList();
 
         System.out.println(names.get(0) + " of first thread");
+        try {
+            sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         System.out.println(names.get(1) + " of first thread");
+        try {
+            sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         new Thread(() -> {
             System.out.println(names.get(2) + " of second thread");
+            try {
+                sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             System.out.println(names.get(3) + " of second thread");
+            try {
+                sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }).start();
 
         new Thread(() -> {
             System.out.println(names.get(4) + " of third thread");
+            try {
+                sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             System.out.println(names.get(5) + " of third thread");
+            try {
+                sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }).start();
     }
 
     @GetMapping("/print-synchronized")
-    public void printSynchNames() {
+    public synchronized void printSynchNames() {
         List<String> names = studentService.getAllStudents().stream()
                 .map(StudentDTO::name).toList();
-        synchronized (names) {
-            System.out.println(names.get(0) + " from first thread");
-            System.out.println(names.get(1) + " from first thread");
-        }
-        synchronized (names) {
+
+        System.out.println(names.get(0) + " from first thread");
+        System.out.println(names.get(1) + " from first thread");
+
+        new Thread(() -> {
             System.out.println(names.get(2) + " from second thread");
             System.out.println(names.get(3) + " from second thread");
-        }
-        synchronized (names) {
+        }).start();
+
+        new Thread(() -> {
             System.out.println(names.get(4) + " from third thread");
             System.out.println(names.get(5) + " from third thread");
-        }
+        }).start();
     }
 }
