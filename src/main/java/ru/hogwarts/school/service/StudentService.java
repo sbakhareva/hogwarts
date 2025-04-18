@@ -1,6 +1,7 @@
 package ru.hogwarts.school.service;
 
 import jakarta.transaction.Transactional;
+import org.apache.logging.log4j.util.PropertySource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -10,11 +11,14 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.model.exception.EmptyStorageException;
 import ru.hogwarts.school.model.exception.InvalidValueException;
+import ru.hogwarts.school.model.exception.NoMatchingResultsException;
 import ru.hogwarts.school.repository.AvatarRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.function.DoubleToIntFunction;
 import java.util.stream.Collectors;
 
 @Service
@@ -177,6 +181,18 @@ public class StudentService {
         return "Средний возраст учеников школы: " + studentRepository.countAvgAge();
     }
 
+    public String getAvgAgeV2() {
+        logger.info("Метод получения среднего возраста студентов с использованием стримов");
+        if (storageIsEmpty()) {
+            logger.error("Хранилище пустое");
+            throw new EmptyStorageException();
+        }
+        return "Средний возраст студентов школы: " + studentRepository.findAll().stream()
+                .mapToInt(s -> s.getAge())
+                .average().getAsDouble();
+    }
+
+
     public List<StudentDTO> getLastFiveStudents() {
         logger.info("Метод получения последних пяти студентов");
         if (storageIsEmpty()) {
@@ -186,5 +202,21 @@ public class StudentService {
         return studentRepository.getLastFiveStudents().stream()
                 .map(studentDTOMapper)
                 .collect(Collectors.toList());
+    }
+
+    public List<String> getNamesStartWithA() {
+        logger.info("Метод получения студентов с именем, начинающимся на 'А'");
+        if (storageIsEmpty()) {
+            logger.error("Хранилище пустое");
+            throw new EmptyStorageException();
+        }
+        List<String> sorted = studentRepository.findAll().stream()
+                .filter(student -> student.getName().startsWith("А"))
+                .map(s -> s.getName().toUpperCase())
+                .toList();
+        if (sorted.isEmpty()) {
+            throw new NoMatchingResultsException();
+        }
+        return sorted;
     }
 }
