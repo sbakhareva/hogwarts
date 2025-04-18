@@ -9,6 +9,8 @@ import ru.hogwarts.school.service.StudentService;
 
 import java.util.List;
 
+import static java.lang.Thread.sleep;
+
 @RestController
 @RequestMapping("/school/student")
 public class StudentController {
@@ -75,5 +77,42 @@ public class StudentController {
     @GetMapping("/get-last-five-students")
     public List<StudentDTO> getLastFiveStudents() {
         return studentService.getLastFiveStudents();
+    }
+
+    @GetMapping("/print-parallel")
+    public void printNames() {
+        List<String> names = studentService.getAllStudents().stream()
+                .map(StudentDTO::name).toList();
+
+        System.out.println(names.get(0) + " of first thread");
+        System.out.println(names.get(1) + " of first thread");
+
+        new Thread(() -> {
+            System.out.println(names.get(2) + " of second thread");
+            System.out.println(names.get(3) + " of second thread");
+        }).start();
+
+        new Thread(() -> {
+            System.out.println(names.get(4) + " of third thread");
+            System.out.println(names.get(5) + " of third thread");
+        }).start();
+    }
+
+    @GetMapping("/print-synchronized")
+    public void printSynchNames() {
+        List<String> names = studentService.getAllStudents().stream()
+                .map(StudentDTO::name).toList();
+        synchronized (names) {
+            System.out.println(names.get(0) + " from first thread");
+            System.out.println(names.get(1) + " from first thread");
+        }
+        synchronized (names) {
+            System.out.println(names.get(2) + " from second thread");
+            System.out.println(names.get(3) + " from second thread");
+        }
+        synchronized (names) {
+            System.out.println(names.get(4) + " from third thread");
+            System.out.println(names.get(5) + " from third thread");
+        }
     }
 }
