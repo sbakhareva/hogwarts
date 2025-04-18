@@ -9,9 +9,8 @@ import ru.hogwarts.school.model.exception.EmptyStorageException;
 import ru.hogwarts.school.model.exception.InvalidValueException;
 import ru.hogwarts.school.repository.FacultyRepository;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Stream;
 
 @Service
 public class FacultyService {
@@ -126,5 +125,24 @@ public class FacultyService {
                     return new InvalidValueException();
                 }));
         return f.get().getStudents();
+    }
+
+    public String getTheLongestFacultyName() {
+        if (storageIsEmpty()) {
+            logger.error("В хранилище нет данных");
+            throw new EmptyStorageException();
+        }
+        return "Факультет с самым длинным названием: " + facultyRepository.findAll().stream()
+                .max(Comparator.comparingInt(faculty -> faculty.getName().length()))
+                .map(Faculty::getName)
+                .get();
+    }
+
+    public String getSum() {
+        long time = System.currentTimeMillis();
+        Long sum = Stream.iterate(1L, a -> a + 1)
+                .limit(1_000_000)
+                .reduce(0L, Long::sum);
+        return "Метод был выполнен за: " + (System.currentTimeMillis() - time) + ", сумма равна " + sum;
     }
 }

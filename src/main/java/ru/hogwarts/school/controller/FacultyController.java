@@ -53,12 +53,22 @@ public class FacultyController {
 
     @GetMapping("/find-by")
     public List<Faculty> findByNameOrColor(@RequestParam(value = "name", required = false) String name,
-                                     @RequestParam(value = "color", required = false) String color) {
+                                           @RequestParam(value = "color", required = false) String color) {
         return facultyService.findByNameOrColor(name, color);
     }
 
     @GetMapping("/get-all-students")
     public List<Student> getAllStudentsOfFaculty(@RequestParam("name") String name) {
         return facultyService.getAllStudentsOfFaculty(name);
+    }
+
+    @GetMapping("/get-longest-faculty-name")
+    public String getTheLongestFacultyName() {
+        return facultyService.getTheLongestFacultyName();
+    }
+
+    @GetMapping("/get-sum")
+    public String getSum() {
+        return facultyService.getSum();
     }
 }

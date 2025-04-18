@@ -188,7 +188,7 @@ public class StudentService {
             throw new EmptyStorageException();
         }
         return "Средний возраст студентов школы: " + studentRepository.findAll().stream()
-                .mapToInt(s -> s.getAge())
+                .mapToInt(Student::getAge)
                 .average().getAsDouble();
     }
 
