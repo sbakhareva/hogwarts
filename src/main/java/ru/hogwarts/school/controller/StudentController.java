@@ -85,46 +85,16 @@ public class StudentController {
                 .map(StudentDTO::name).toList();
 
         System.out.println(names.get(0) + " of first thread");
-        try {
-            sleep(3000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         System.out.println(names.get(1) + " of first thread");
-        try {
-            sleep(3000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
 
         new Thread(() -> {
             System.out.println(names.get(2) + " of second thread");
-            try {
-                sleep(3000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
             System.out.println(names.get(3) + " of second thread");
-            try {
-                sleep(3000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
         }).start();
 
         new Thread(() -> {
             System.out.println(names.get(4) + " of third thread");
-            try {
-                sleep(3000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
             System.out.println(names.get(5) + " of third thread");
-            try {
-                sleep(3000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
         }).start();
     }
 
