@@ -1,10 +1,11 @@
 package ru.hogwarts.school.service;
 
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.dto.StudentDTO;
 import ru.hogwarts.school.dto.StudentDTOMapper;
-import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.model.exception.EmptyStorageException;
@@ -23,6 +24,7 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final StudentDTOMapper studentDTOMapper;
     private final FacultyService facultyService;
+    private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
     public StudentService(AvatarRepository avatarRepository, StudentRepository studentRepository, StudentDTOMapper studentDTOMapper, FacultyService facultyService) {
         this.avatarRepository = avatarRepository;
@@ -35,20 +37,41 @@ public class StudentService {
         return studentRepository.findAll().isEmpty();
     }
 
+    public boolean isStudentOldEnough(int age) {
+        return age > 16;
+    }
+
+//    public boolean nameIsNotUnique(String name) {
+//        return studentRepository.findAll().contains(name);
+//    }
+
     public void addStudent(Student student) {
+        logger.info("Добавление студента в базу данных");
         if (facultyService.getAllFaculties().isEmpty()) {
+            logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
-        Optional.of(studentRepository.save(student)).orElseThrow(InvalidValueException::new);
+        if (!isStudentOldEnough(student.getAge())) {
+            logger.error("Возраст студента должен быть больше 16");
+            throw new InvalidValueException();
+        }
+        Optional.of(studentRepository.save(student)).orElseThrow(() -> {
+            logger.error("Переданы некорректные данные, невозможно сохранить");
+            return new InvalidValueException();
+        });
     }
 
     public StudentDTO getStudentByID(Long id) {
+        logger.info("Метод поиска студента по id");
         if (storageIsEmpty()) {
+            logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
-        StudentDTO student = studentRepository.findById(id).map(studentDTOMapper)
-                .orElseThrow(InvalidValueException::new);
-        return student;
+        return studentRepository.findById(id).map(studentDTOMapper)
+                .orElseThrow(() -> {
+                    logger.error("В хранилище нет студента с переданным идентификатором");
+                    return new InvalidValueException();
+                });
     }
 
     public Optional<Student> findStudent(Long id) {
@@ -56,7 +79,9 @@ public class StudentService {
     }
 
     public List<StudentDTO> getAllStudents() {
+        logger.info("Метод получения всех студентов");
         if (storageIsEmpty()) {
+            logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
         return studentRepository.findAll().stream()
@@ -65,27 +90,41 @@ public class StudentService {
     }
 
     public Student updateStudent(Student student) {
+        logger.info("Метод обновления данных студента");
         if (storageIsEmpty()) {
+            logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
-        return Optional.of(studentRepository.save(student)).orElseThrow(InvalidValueException::new);
+        return Optional.of(studentRepository.save(student)).orElseThrow(() -> {
+            logger.error("Переданы некорректные данные студента или студента, невозможно обновить данные или сохранить");
+            return new InvalidValueException();
+
+        });
     }
 
     @Transactional
     public void removeStudent(Long id) {
+        logger.info("Метод удаления данных студента");
         if (storageIsEmpty()) {
+            logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
-        Student s = studentRepository.findById(id).orElseThrow(InvalidValueException::new);
+        Student s = studentRepository.findById(id).orElseThrow(() -> {
+            logger.error("Студента с переданным идентификатором не найдено");
+            return new InvalidValueException();
+        });
         avatarRepository.deleteByStudentId(id);
         studentRepository.delete(s);
     }
 
     public List<Student> sortByAge(int age) {
+        logger.info("Метод сортировки студентов по возрасту");
         if (storageIsEmpty()) {
+            logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
-        if (age <= 0) {
+        if (age <= 16) {
+            logger.warn("Переданный возраст меньше или равен минимальному возрасту ученика");
             throw new InvalidValueException();
         }
         return studentRepository.findAll().stream()
@@ -94,41 +133,54 @@ public class StudentService {
     }
 
     public List<Student> findByAgeBetween(int ageMin, int ageMax) {
+        logger.info("Метод поиска студентов в возрастном диапазоне");
         if (storageIsEmpty()) {
+            logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
         List<Student> sorted = studentRepository.findAllByAgeBetween(ageMin, ageMax);
-        if (ageMin >= ageMax || ageMax == 0 || sorted.isEmpty()) {
+        if (ageMin >= ageMax || ageMin <= 16 || sorted.isEmpty()) {
+            logger.error("Передан неправильный возрастной диапазон или студентов с возрастом в это диапазоне не найдено");
             throw new InvalidValueException();
         }
         return sorted;
     }
 
     public Faculty getStudentsFaculty(String name) {
+        logger.info("Метод получения факультета студента");
         if (storageIsEmpty()) {
+            logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
-        Student student = studentRepository.findStudentByNameIgnoreCaseContains(name).orElseThrow(InvalidValueException::new);
-        return Optional.of(student.getFaculty())
-                .orElseThrow(InvalidValueException::new);
+        Student student = studentRepository.findStudentByNameIgnoreCaseContains(name).orElseThrow(() -> {
+            logger.error("Студента с таким именем нет в ханилище");
+            return new InvalidValueException();
+        });
+        return student.getFaculty();
     }
 
     public String getNumberOfStudents() {
+        logger.info("Метод получения количества студентов");
         if (storageIsEmpty()) {
+            logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
         return "Общее количество студентов в школе: " + studentRepository.countStudents();
     }
 
     public String getAvgAge() {
+        logger.info("Метод получения среднего возраста студентов");
         if (storageIsEmpty()) {
+            logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
         return "Средний возраст учеников школы: " + studentRepository.countAvgAge();
     }
 
     public List<StudentDTO> getLastFiveStudents() {
+        logger.info("Метод получения последних пяти студентов");
         if (storageIsEmpty()) {
+            logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
         return studentRepository.getLastFiveStudents().stream()
