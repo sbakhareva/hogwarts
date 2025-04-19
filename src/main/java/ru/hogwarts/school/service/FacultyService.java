@@ -10,6 +10,8 @@ import ru.hogwarts.school.model.exception.InvalidValueException;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 @Service
@@ -140,9 +142,9 @@ public class FacultyService {
 
     public String getSum() {
         long time = System.currentTimeMillis();
-        Long sum = Stream.iterate(1L, a -> a + 1)
+        long sum = LongStream.iterate(1L, a -> a + 1)
                 .limit(1_000_000)
-                .reduce(0L, Long::sum);
+                .sum();
         return "Метод был выполнен за: " + (System.currentTimeMillis() - time) + ", сумма равна " + sum;
     }
 }
