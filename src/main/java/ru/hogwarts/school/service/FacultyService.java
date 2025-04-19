@@ -10,9 +10,7 @@ import ru.hogwarts.school.model.exception.InvalidValueException;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.*;
-import java.util.stream.IntStream;
 import java.util.stream.LongStream;
-import java.util.stream.Stream;
 
 @Service
 public class FacultyService {
