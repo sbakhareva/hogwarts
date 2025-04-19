@@ -81,39 +81,11 @@ public class StudentController {
 
     @GetMapping("/print-parallel")
     public void printNames() {
-        List<String> names = studentService.getAllStudents().stream()
-                .map(StudentDTO::name).toList();
-
-        System.out.println(names.get(0) + " of first thread");
-        System.out.println(names.get(1) + " of first thread");
-
-        new Thread(() -> {
-            System.out.println(names.get(2) + " of second thread");
-            System.out.println(names.get(3) + " of second thread");
-        }).start();
-
-        new Thread(() -> {
-            System.out.println(names.get(4) + " of third thread");
-            System.out.println(names.get(5) + " of third thread");
-        }).start();
+        studentService.printNames();
     }
 
     @GetMapping("/print-synchronized")
     public synchronized void printSynchNames() {
-        List<String> names = studentService.getAllStudents().stream()
-                .map(StudentDTO::name).toList();
-
-        System.out.println(names.get(0) + " from first thread");
-        System.out.println(names.get(1) + " from first thread");
-
-        new Thread(() -> {
-            System.out.println(names.get(2) + " from second thread");
-            System.out.println(names.get(3) + " from second thread");
-        }).start();
-
-        new Thread(() -> {
-            System.out.println(names.get(4) + " from third thread");
-            System.out.println(names.get(5) + " from third thread");
-        }).start();
+        studentService.printSynchNames();
     }
 }

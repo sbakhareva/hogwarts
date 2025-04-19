@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.lang.Thread.sleep;
+
 @Service
 @Transactional
 public class StudentService {
@@ -186,5 +188,71 @@ public class StudentService {
         return studentRepository.getLastFiveStudents().stream()
                 .map(studentDTOMapper)
                 .collect(Collectors.toList());
+    }
+
+    public void printNames() {
+        List<String> names = studentRepository.findAll().stream()
+                .map(Student::getName).toList();
+
+        System.out.println(names.get(0) + " of first thread");
+        try {
+            sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(names.get(1) + " of first thread");
+        try {
+            sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        new Thread(() -> {
+            System.out.println(names.get(2) + " of second thread");
+            try {
+                sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println(names.get(3) + " of second thread");
+            try {
+                sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+
+        new Thread(() -> {
+            System.out.println(names.get(4) + " of third thread");
+            try {
+                sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println(names.get(5) + " of third thread");
+            try {
+                sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+    }
+
+    public synchronized void printSynchNames() {
+        List<String> names = studentRepository.findAll().stream()
+                .map(Student::getName).toList();
+
+        System.out.println(names.get(0) + " from first thread");
+        System.out.println(names.get(1) + " from first thread");
+
+        new Thread(() -> {
+            System.out.println(names.get(2) + " from second thread");
+            System.out.println(names.get(3) + " from second thread");
+        }).start();
+
+        new Thread(() -> {
+            System.out.println(names.get(4) + " from third thread");
+            System.out.println(names.get(5) + " from third thread");
+        }).start();
     }
 }
