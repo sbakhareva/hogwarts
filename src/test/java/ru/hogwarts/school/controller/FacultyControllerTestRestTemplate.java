@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -107,10 +106,10 @@ class FacultyControllerTestRestTemplate {
         facultyController.addFaculty(f2);
         String requestedName = "faculty";
         String requestedColor = "WhItE";
-        assertThat(this.testRestTemplate.getForObject("http://localhost:" + port + "/school/faculty/findBy?name=" + requestedName, String.class))
+        assertThat(this.testRestTemplate.getForObject("http://localhost:" + port + "/school/faculty/find-by?name=" + requestedName, String.class))
                 .isNotNull()
                 .containsIgnoringCase(requestedName);
-        assertThat(this.testRestTemplate.getForObject("http://localhost:" + port + "/school/faculty/findBy?color=" + requestedColor, String.class))
+        assertThat(this.testRestTemplate.getForObject("http://localhost:" + port + "/school/faculty/find-by?color=" + requestedColor, String.class))
                 .isNotNull()
                 .containsIgnoringCase(requestedColor);
     }
@@ -119,11 +118,10 @@ class FacultyControllerTestRestTemplate {
     void getAllStudents() {
         Faculty f1 = new Faculty("Faculty", "blue");
         facultyController.addFaculty(f1);
-        Student s = new Student("Student", 13, f1);
+        Student s = new Student("Student", 17, f1);
         studentController.addStudent(s);
-        assertThat(this.testRestTemplate.getForObject("http://localhost:" + port + "/school/faculty/getAllStudents?name=" + f1.getName(), String.class))
+        assertThat(this.testRestTemplate.getForObject("http://localhost:" + port + "/school/faculty/get-all-students?name=" + f1.getName(), String.class))
                 .isNotNull()
                 .contains(s.getName());
     }
-    //
 }

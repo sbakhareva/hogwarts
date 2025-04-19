@@ -207,35 +207,25 @@ public class StudentService {
             throw new RuntimeException(e);
         }
 
-        new Thread(() -> {
-            System.out.println(names.get(2) + " of second thread");
-            try {
-                sleep(2000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            System.out.println(names.get(3) + " of second thread");
-            try {
-                sleep(2000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }).start();
+        try {
+            new Thread(() -> {
+                System.out.println(names.get(2) + " of second thread");
+                System.out.println(names.get(3) + " of second thread");
+            }).start();
+            sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
-        new Thread(() -> {
-            System.out.println(names.get(4) + " of third thread");
-            try {
-                sleep(2000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            System.out.println(names.get(5) + " of third thread");
-            try {
-                sleep(2000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }).start();
+        try {
+            new Thread(() -> {
+                System.out.println(names.get(4) + " of third thread");
+                System.out.println(names.get(5) + " of third thread");
+            }).start();
+            sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public synchronized void printSynchNames() {
