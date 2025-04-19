@@ -116,11 +116,11 @@ class FacultyControllerTestRestTemplate {
 
     @Test
     void getAllStudents() {
-        Faculty f1 = new Faculty("Faculty", "blue");
-        facultyController.addFaculty(f1);
-        Student s = new Student("Student", 17, f1);
+        Faculty faculty = new Faculty("Faculty", "blue");
+        facultyController.addFaculty(faculty);
+        Student s = new Student("Student", 17, faculty);
         studentController.addStudent(s);
-        assertThat(this.testRestTemplate.getForObject("http://localhost:" + port + "/school/faculty/get-all-students?name=" + f1.getName(), String.class))
+        assertThat(this.testRestTemplate.getForObject("http://localhost:" + port + "/school/faculty/get-all-students?name=" + faculty.getName(), String.class))
                 .isNotNull()
                 .contains(s.getName());
     }
