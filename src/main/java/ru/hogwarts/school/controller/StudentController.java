@@ -9,6 +9,8 @@ import ru.hogwarts.school.service.StudentService;
 
 import java.util.List;
 
+import static java.lang.Thread.sleep;
+
 @RestController
 @RequestMapping("/school/student")
 public class StudentController {

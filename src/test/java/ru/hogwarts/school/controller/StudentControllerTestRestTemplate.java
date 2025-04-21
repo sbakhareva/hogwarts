@@ -5,10 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.*;
-import org.springframework.test.context.ActiveProfiles;
 
+import org.springframework.test.context.ActiveProfiles;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
@@ -41,13 +40,13 @@ class StudentControllerTestRestTemplate {
 
         Student s = new Student();
         s.setName("Harry");
-        s.setAge(11);
+        s.setAge(17);
         s.setFaculty(f);
         ResponseEntity response = testRestTemplate.exchange(
                 "http://localhost:" + port + "/school/student/add",
                 HttpMethod.POST,
                 new HttpEntity<>(s),
-                Student.class
+                String.class
         );
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
@@ -59,7 +58,7 @@ class StudentControllerTestRestTemplate {
 
         Student s = new Student();
         s.setName("Harry");
-        s.setAge(11);
+        s.setAge(17);
         s.setFaculty(f);
         studentController.addStudent(s);
 
@@ -74,7 +73,7 @@ class StudentControllerTestRestTemplate {
 
         Student s = new Student();
         s.setName("Harry");
-        s.setAge(11);
+        s.setAge(17);
         s.setFaculty(f);
         studentController.addStudent(s);
 
@@ -90,7 +89,7 @@ class StudentControllerTestRestTemplate {
 
         Student s = new Student();
         s.setName("Harry");
-        s.setAge(11);
+        s.setAge(17);
         s.setFaculty(f);
         studentController.addStudent(s);
 
@@ -110,7 +109,7 @@ class StudentControllerTestRestTemplate {
 
         Student s = new Student();
         s.setName("Harry");
-        s.setAge(11);
+        s.setAge(17);
         s.setFaculty(f);
         studentController.addStudent(s);
 

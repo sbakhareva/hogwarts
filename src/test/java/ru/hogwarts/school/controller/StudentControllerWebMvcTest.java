@@ -177,4 +177,34 @@ class StudentControllerWebMvcTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.color").value(f.getColor()));
     }
 
+
+    @Test
+    void printNamesTest() throws Exception {
+        String faculty = "shmaculty";
+        when(studentService.getAllStudents()).thenReturn(List.of(
+                new StudentDTO(1L, "student 1", 17, faculty),
+                new StudentDTO(2L, "student 2", 17, faculty),
+                new StudentDTO(3L, "student 3", 17, faculty),
+                new StudentDTO(4L, "student 4", 17, faculty),
+                new StudentDTO(5L, "student 5", 17, faculty),
+                new StudentDTO(6L, "student 6", 17, faculty)));
+
+        mockMvc.perform(get("/school/student/print-parallel"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void printSynchNamesTest() throws Exception {
+        String faculty = "shmaculty";
+        when(studentService.getAllStudents()).thenReturn(List.of(
+                new StudentDTO(1L, "student 1", 17, faculty),
+                new StudentDTO(2L, "student 2", 17, faculty),
+                new StudentDTO(3L, "student 3", 17, faculty),
+                new StudentDTO(4L, "student 4", 17, faculty),
+                new StudentDTO(5L, "student 5", 17, faculty),
+                new StudentDTO(6L, "student 6", 17, faculty)));
+
+        mockMvc.perform(get("/school/student/print-synchronized"))
+                .andExpect(status().isOk());
+    }
 }
