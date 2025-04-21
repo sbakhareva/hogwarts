@@ -78,14 +78,4 @@ public class StudentController {
     public List<StudentDTO> getLastFiveStudents() {
         return studentService.getLastFiveStudents();
     }
-
-    @GetMapping("/print-parallel")
-    public void printNames() {
-        studentService.printNames();
-    }
-
-    @GetMapping("/print-synchronized")
-    public synchronized void printSynchNames() {
-        studentService.printSynchNames();
-    }
 }
