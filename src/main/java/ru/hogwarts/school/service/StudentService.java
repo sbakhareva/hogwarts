@@ -1,7 +1,6 @@
 package ru.hogwarts.school.service;
 
 import jakarta.transaction.Transactional;
-import org.apache.logging.log4j.util.PropertySource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -16,9 +15,7 @@ import ru.hogwarts.school.repository.AvatarRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.function.DoubleToIntFunction;
 import java.util.stream.Collectors;
 
 import static java.lang.Thread.sleep;
