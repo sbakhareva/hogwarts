@@ -28,8 +28,8 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 public class AvatarService {
     @Value("${students.avatar.dir.path}")
     private String avatarsDir;
-    private AvatarRepository avatarRepository;
-    private StudentRepository studentRepository;
+    private final AvatarRepository avatarRepository;
+    private final StudentRepository studentRepository;
 
     public AvatarService(AvatarRepository avatarRepository, StudentRepository studentRepository) {
         this.avatarRepository = avatarRepository;

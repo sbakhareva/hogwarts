@@ -44,7 +44,7 @@ public class StudentService {
         return age > 16;
     }
 
-//    public boolean nameIsNotUnique(String name) {
+//    public boolean isUnique(String name) {
 //        return studentRepository.findAll().contains(name);
 //    }
 
