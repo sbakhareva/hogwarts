@@ -36,11 +36,11 @@ class FacultyControllerWebMvcTest {
     @Test
     void addFacultyTest() throws Exception {
         JSONObject facultyJSON = new JSONObject();
-        facultyJSON.put("name", "Faculty");
+        facultyJSON.put("name", "faculty");
         facultyJSON.put("color", "green");
 
         Faculty f = new Faculty();
-        f.setName("Faculty");
+        f.setName("faculty");
         f.setColor("green");
 
         when(facultyRepository.save(any(Faculty.class))).thenReturn(f);
@@ -60,7 +60,7 @@ class FacultyControllerWebMvcTest {
     @Test
     void getFacultyByIdTest() throws Exception {
         Faculty f = new Faculty();
-        f.setName("Faculty");
+        f.setName("faculty");
         f.setColor("green");
 
         when(facultyRepository.findById(anyLong())).thenReturn(Optional.of(f));
@@ -76,7 +76,7 @@ class FacultyControllerWebMvcTest {
     @Test
     void deleteFacultyTest() throws Exception {
         Faculty f = new Faculty();
-        f.setName("Faculty");
+        f.setName("faculty");
         f.setColor("green");
 
         when(facultyRepository.findById(anyLong())).thenReturn(Optional.of(f));
@@ -88,7 +88,7 @@ class FacultyControllerWebMvcTest {
 
     @Test
     void editFacultyTest() throws Exception {
-        Faculty f = new Faculty("Faculty", "green");
+        Faculty f = new Faculty("faculty", "green");
         when(facultyRepository.save(any(Faculty.class))).thenReturn(f);
 
         JSONObject facultyJSON = new JSONObject();
@@ -127,7 +127,7 @@ class FacultyControllerWebMvcTest {
 
     @Test
     void findByNameOrColorTest() throws Exception {
-        Faculty f = new Faculty("Faculty", "blue");
+        Faculty f = new Faculty("faculty", "blue");
 
         when(facultyRepository.findByNameIgnoreCaseOrColorIgnoreCaseContains(anyString(), anyString())).thenReturn(List.of(f));
         when(facultyService.findByNameOrColor(anyString(), anyString())).thenReturn(List.of(f));
@@ -141,7 +141,7 @@ class FacultyControllerWebMvcTest {
 
     @Test
     void getAllStudentsTest() throws Exception {
-        Faculty f = new Faculty("Faculty", "color");
+        Faculty f = new Faculty("faculty", "color");
         Student s = new Student("Student", 13, f);
 
         when(facultyRepository.findByNameIgnoreCaseContains(anyString())).thenReturn(Optional.of(f));

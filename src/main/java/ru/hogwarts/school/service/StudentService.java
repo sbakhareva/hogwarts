@@ -12,6 +12,7 @@ import ru.hogwarts.school.model.exception.EmptyStorageException;
 import ru.hogwarts.school.model.exception.InvalidValueException;
 import ru.hogwarts.school.model.exception.NoMatchingResultsException;
 import ru.hogwarts.school.repository.AvatarRepository;
+import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.List;
@@ -27,13 +28,15 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final StudentDTOMapper studentDTOMapper;
     private final FacultyService facultyService;
+    private final FacultyRepository facultyRepository;
     private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
-    public StudentService(AvatarRepository avatarRepository, StudentRepository studentRepository, StudentDTOMapper studentDTOMapper, FacultyService facultyService) {
+    public StudentService(AvatarRepository avatarRepository, StudentRepository studentRepository, StudentDTOMapper studentDTOMapper, FacultyService facultyService, FacultyRepository facultyRepository) {
         this.avatarRepository = avatarRepository;
         this.studentRepository = studentRepository;
         this.studentDTOMapper = studentDTOMapper;
         this.facultyService = facultyService;
+        this.facultyRepository = facultyRepository;
     }
 
     public boolean storageIsEmpty() {
@@ -44,16 +47,21 @@ public class StudentService {
         return age > 16;
     }
 
-//    public boolean isUnique(String name) {
-//        return studentRepository.findAll().contains(name);
-//    }
+    public boolean isStudentUnique(String name) {
+        return studentRepository.existsByName(name);
+    }
 
     public void addStudent(Student student) {
         logger.info("Добавление студента в базу данных");
+
+        if (isStudentUnique(student.getName())) {
+            throw new InvalidValueException();
+        }
         if (facultyService.getAllFaculties().isEmpty()) {
             logger.error("Хранилище пустое");
             throw new EmptyStorageException();
         }
+
         if (!isStudentOldEnough(student.getAge())) {
             logger.error("Возраст студента должен быть больше 16");
             throw new InvalidValueException();

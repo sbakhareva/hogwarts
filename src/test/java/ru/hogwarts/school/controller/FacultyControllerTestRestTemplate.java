@@ -37,7 +37,7 @@ class FacultyControllerTestRestTemplate {
 
     @Test
     void addFaculty() {
-        Faculty f = new Faculty("Faculty", "color");
+        Faculty f = new Faculty("faculty", "color");
         ResponseEntity response = testRestTemplate.exchange(
                 "http://localhost:" + port + "/school/faculty/add",
                 HttpMethod.POST,
@@ -49,7 +49,7 @@ class FacultyControllerTestRestTemplate {
 
     @Test
     void getFacultyById() {
-        Faculty f = new Faculty("Faculty", "color");
+        Faculty f = new Faculty("faculty", "color");
         facultyController.addFaculty(f);
         Assertions
                 .assertThat(this.testRestTemplate.getForObject("http://localhost:" + port + "/school/faculty/get?id=" + f.getId(), String.class))
@@ -60,7 +60,7 @@ class FacultyControllerTestRestTemplate {
 
     @Test
     void removeFaculty() {
-        Faculty f = new Faculty("Faculty", "color");
+        Faculty f = new Faculty("faculty", "color");
         facultyController.addFaculty(f);
         ResponseEntity response = testRestTemplate.exchange(
                 "http://localhost:" + port + "/school/faculty/remove?id=" + f.getId(),
@@ -73,7 +73,7 @@ class FacultyControllerTestRestTemplate {
 
     @Test
     void editFaculty() {
-        Faculty f = new Faculty("Faculty", "color");
+        Faculty f = new Faculty("faculty", "color");
         facultyController.addFaculty(f);
         f.setName("Факультет");
 
@@ -89,7 +89,7 @@ class FacultyControllerTestRestTemplate {
 
     @Test
     void sortByColor() {
-        Faculty f1 = new Faculty("Faculty", "blue");
+        Faculty f1 = new Faculty("faculty", "blue");
         Faculty f2 = new Faculty("Shmaculty", "white");
         facultyController.addFaculty(f1);
         facultyController.addFaculty(f2);
@@ -100,7 +100,7 @@ class FacultyControllerTestRestTemplate {
 
     @Test
     void findByNameOrColor() {
-        Faculty f1 = new Faculty("Faculty", "blue");
+        Faculty f1 = new Faculty("faculty", "blue");
         Faculty f2 = new Faculty("Shmaculty", "white");
         facultyController.addFaculty(f1);
         facultyController.addFaculty(f2);
@@ -116,7 +116,7 @@ class FacultyControllerTestRestTemplate {
 
     @Test
     void getAllStudents() {
-        Faculty faculty = new Faculty("Faculty", "blue");
+        Faculty faculty = new Faculty("faculty", "blue");
         facultyController.addFaculty(faculty);
         Student s = new Student("Student", 17, faculty);
         studentController.addStudent(s);

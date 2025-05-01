@@ -1,21 +1,11 @@
 package ru.hogwarts.school.model.exception;
 
-import java.util.NoSuchElementException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
+@ResponseStatus(HttpStatus.BAD_REQUEST)
 public class NoMatchingResultsException extends RuntimeException {
     public NoMatchingResultsException() {
-        super();
-    }
-
-    public NoMatchingResultsException(String message) {
-        super(message);
-    }
-
-    public NoMatchingResultsException(Throwable t) {
-        super(t);
-    }
-
-    public NoMatchingResultsException(String message, Throwable t) {
-        super(message, t);
+        super("Поиск по параметрам не дал результата");
     }
 }

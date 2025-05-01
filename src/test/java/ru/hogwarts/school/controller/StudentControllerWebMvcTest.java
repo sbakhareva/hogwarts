@@ -42,7 +42,7 @@ class StudentControllerWebMvcTest {
 
     @Test
     void addStudentTest() throws Exception {
-        Faculty f = new Faculty("Faculty", "yellow");
+        Faculty f = new Faculty("faculty", "yellow");
         JSONObject studentJson = new JSONObject();
         studentJson.put("name", "Student");
         studentJson.put("age", 13);
@@ -65,7 +65,7 @@ class StudentControllerWebMvcTest {
 
     @Test
     void getStudentByIdTest() throws Exception {
-        Faculty f = new Faculty("Faculty", "yellow");
+        Faculty f = new Faculty("faculty", "yellow");
         Student s = new Student("Student", 13, f);
         StudentDTO sDto = new StudentDTO(s.getId(), s.getName(), s.getAge(), s.getFaculty().getName());
 
@@ -81,7 +81,7 @@ class StudentControllerWebMvcTest {
 
     @Test
     void getAllStudentsTest() throws Exception {
-        Faculty f = new Faculty("Faculty", "yellow");
+        Faculty f = new Faculty("faculty", "yellow");
         Student s = new Student("Student", 17, f);
 
         when(studentDTOMapper.apply(any(Student.class)))
@@ -100,7 +100,7 @@ class StudentControllerWebMvcTest {
 
     @Test
     void removeStudentTest() throws Exception {
-        Faculty f = new Faculty("Faculty", "yellow");
+        Faculty f = new Faculty("faculty", "yellow");
         Student s = new Student("Student", 13, f);
 
         when(studentRepository.findById(anyLong())).thenReturn(Optional.of(s));
@@ -112,7 +112,7 @@ class StudentControllerWebMvcTest {
 
     @Test
     void editStudentTest() throws Exception {
-        Faculty f = new Faculty("Faculty", "yellow");
+        Faculty f = new Faculty("faculty", "yellow");
         Student s = new Student("Student", 13, f);
         when(studentRepository.save(any(Student.class))).thenReturn(s);
 
@@ -134,7 +134,7 @@ class StudentControllerWebMvcTest {
 
     @Test
     void sortStudentsByAgeTest() throws Exception {
-        Faculty f = new Faculty("Faculty", "yellow");
+        Faculty f = new Faculty("faculty", "yellow");
         Student s = new Student("Student", 13, f);
 
         when(studentRepository.findAll()).thenReturn(List.of(s));
@@ -149,7 +149,7 @@ class StudentControllerWebMvcTest {
 
     @Test
     void findBetweenAgeTest() throws Exception {
-        Faculty f = new Faculty("Faculty", "yellow");
+        Faculty f = new Faculty("faculty", "yellow");
         Student s = new Student("Student", 17, f);
 
         when(studentRepository.findAllByAgeBetween(anyInt(), anyInt())).thenReturn(List.of(s));
@@ -164,7 +164,7 @@ class StudentControllerWebMvcTest {
 
     @Test
     void getFacultyTest() throws Exception {
-        Faculty f = new Faculty("Faculty", "yellow");
+        Faculty f = new Faculty("faculty", "yellow");
         Student s = new Student("Student", 17, f);
 
         when(studentRepository.findStudentByNameIgnoreCaseContains(anyString())).thenReturn(Optional.of(s));

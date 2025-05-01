@@ -4,6 +4,6 @@ public record StudentDTO(
         Long id,
         String name,
         int age,
-        String Faculty
+        String faculty
 ) {
 }

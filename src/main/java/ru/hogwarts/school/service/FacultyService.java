@@ -35,7 +35,7 @@ public class FacultyService {
     }
 
     public Faculty getFacultyByID(Long id) {
-        logger.info("Методполучения факультета по идентификатору");
+        logger.info("Метод получения факультета по идентификатору");
         if (storageIsEmpty()) {
             logger.error("В хранилище нет данных");
             throw new EmptyStorageException();
